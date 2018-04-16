@@ -20,9 +20,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "cars_db";
+    private static DatabaseHelper instance = null;
 
-    public DatabaseHelper(Context context) {
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static DatabaseHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DatabaseHelper(context);
+        }
+        return instance;
     }
 
     @Override
@@ -217,4 +225,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(car.getId())});
         db.close();
     }
+
+    /*
+
+
+    public void updateCar(Car c, int position) {
+
+        Log.d(TAG, "Car to be updated: " + Car.toString(c));
+        int result = databaseHelper.updateCar(c);
+        Log.d(TAG, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
+
+        if (c.getFavorite() == 1) {
+            carsList.set(position, c);
+        } else {
+            carsList.remove(position);
+        }
+
+        carsAdapter.notifyItemChanged(position);
+        toggleEmptyCars();
+    }
+
+    private void createCar(Car car) {
+
+        long id = databaseHelper.insertCar(car);
+
+        car = databaseHelper.getCar(id);
+
+        if (car != null) {
+            carsList.add(0, car);
+            carsAdapter.notifyDataSetChanged();
+            toggleEmptyCars();
+        }
+    }
+
+    public void deleteCar(int position) {
+        databaseHelper.deleteCar(carsList.get(position));
+        carsList.remove(position);
+        carsAdapter.notifyItemRemoved(position);
+        toggleEmptyCars();
+    }
+     */
 }

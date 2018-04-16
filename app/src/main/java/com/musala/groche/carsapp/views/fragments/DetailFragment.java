@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
@@ -16,12 +17,15 @@ public class DetailFragment extends BaseFragment {
 
     private static final String TAG = "DetailFragment";
     public static final String NAME = "content_dtls_frag";
-    public String title = "Car details";
-
-    private boolean root = false;
+    public final String title = "Car details";
+    private final boolean root = false;
 
     private Car car;
     private TextView favBtn;
+    private FloatingActionButton fab;
+    private TextView favTextView;
+    private View rootView;
+    private Button backBtn;
 
     private DatabaseHelper databaseHelper;
 
@@ -38,13 +42,44 @@ public class DetailFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView;
-        TextView textView;
-        final TextView favTextView;
-
-        databaseHelper = new DatabaseHelper(this.getActivity());
-
         rootView = inflater.inflate(R.layout.content_dtls_frag, container, false);
+
+        init();
+        setListeners();
+        initDB();
+
+        return rootView;
+    }
+
+    public void updateCar(Car c) {
+
+        Log.d(NAME, "Car to be updated: " + Car.toString(c));
+        int result = databaseHelper.updateCar(c);
+        Log.d(NAME, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public boolean isRoot() {
+        return root;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    private void init() {
+
+        TextView textView;
 
         favTextView = rootView.findViewById(R.id.detail_favorite);
         favBtn = rootView.findViewById(R.id.favbtn);
@@ -53,33 +88,8 @@ public class DetailFragment extends BaseFragment {
         } else {
             favBtn.setText("+");
         }
-        FloatingActionButton fab = rootView.findViewById(R.id.details_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (car.getFavorite() == 1) {
-                    car.setFavorite(0);
-                    updateCar(car);
-                    favTextView.setText("");
-                    favBtn.setText("+");
-                } else {
-                    car.setFavorite(1);
-                    updateCar(car);
-                    favTextView.setText(R.string.lbl_favorite);
-                    favBtn.setText("-");
-                }
-            }
-        });
-
-//        backBtn = findViewById(R.id.back_btn);
-
-//        backBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getFragmentManager().popBackStack();
-//                backBtn.setVisibility(View.GONE);
-//            }
-//        });
+        fab = rootView.findViewById(R.id.details_fab);
+//        backBtn = rootView.findViewById(R.id.back_btn);
 
         textView = rootView.findViewById(R.id.detail_manufacturer);
         textView.setText(this.car.getManufacturer());
@@ -119,31 +129,38 @@ public class DetailFragment extends BaseFragment {
                 favTextView.setText(R.string.lbl_favorite);
                 break;
         }
-
-        return rootView;
     }
 
-    public void updateCar(Car c) {
+    private void setListeners() {
 
-        Log.d(NAME, "Car to be updated: " + Car.toString(c));
-        int result = databaseHelper.updateCar(c);
-        Log.d(NAME, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (car.getFavorite() == 1) {
+                    car.setFavorite(0);
+                    updateCar(car);
+                    favTextView.setText("");
+                    favBtn.setText("+");
+                } else {
+                    car.setFavorite(1);
+                    updateCar(car);
+                    favTextView.setText(R.string.lbl_favorite);
+                    favBtn.setText("-");
+                }
+            }
+        });
+
+//        backBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getFragmentManager().popBackStack();
+//                backBtn.setVisibility(View.GONE);
+//            }
+//        });
     }
 
-    public void setCar(Car car) {
-        this.car = car;
-    }
+    private void initDB() {
 
-    public String getName() {
-        return NAME;
-    }
-
-    public boolean isRoot() {
-        return root;
-    }
-
-    @Override
-    public String getTitle() {
-        return title;
+        databaseHelper = DatabaseHelper.getInstance(this.getActivity());
     }
 }

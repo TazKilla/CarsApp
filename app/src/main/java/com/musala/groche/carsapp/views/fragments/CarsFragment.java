@@ -2,6 +2,7 @@ package com.musala.groche.carsapp.views.fragments;
 
 import android.util.Log;
 
+import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.model.Car;
 
 import java.util.List;
@@ -10,10 +11,8 @@ public class CarsFragment extends CarListingFragment {
 
     public static final String NAME = "content_cars_frag";
     private static final String TAG = "CarsFragment";
-
-    private String title = "Cars";
-
-    private boolean root = true;
+    private final String title = "Cars";
+    private final boolean root = true;
 
     public static CarsFragment newInstance(List<Car> carsList, int layoutId) {
 
@@ -31,10 +30,12 @@ public class CarsFragment extends CarListingFragment {
         return fragment;
     }
 
+    @Override
     public String getName() {
         return NAME;
     }
 
+    @Override
     public boolean isRoot() {
         return root;
     }

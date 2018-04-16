@@ -91,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private void initDB() {
 
         Log.d(TAG, "Initializing database...");
-        databaseHelper = new DatabaseHelper(this);
+        databaseHelper =DatabaseHelper.getInstance(this);
 
         carsList.addAll(databaseHelper.getAllCars());
         Log.d(TAG, "Database initialized...");

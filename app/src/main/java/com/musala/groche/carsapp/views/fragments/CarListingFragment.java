@@ -34,8 +34,11 @@ public abstract class CarListingFragment extends BaseFragment {
     private RecyclerView carsRecyclerView;
     protected CarsAdapter carsAdapter;
     private TextView noCarsView;
+    private View rootView;
 
-    RecyclerViewItemClickInterface CarClickListener;
+    private RecyclerViewItemClickInterface CarClickListener;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     public void onAttach(Activity activity) {
@@ -51,53 +54,13 @@ public abstract class CarListingFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(fragmentLayoutId, container, false);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity());
+        rootView = inflater.inflate(fragmentLayoutId, container, false);
 
-        databaseHelper = new DatabaseHelper(this.getActivity());
-
-        noCarsView = rootView.findViewById(R.id.empty_car_view);
-        carsRecyclerView = rootView.findViewById(R.id.recycler_view);
-        carsRecyclerView.setLayoutManager(mLayoutManager);
-        carsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        carsRecyclerView.addItemDecoration(
-                new DividerItemDecoration(
-                        this.getActivity(),
-                        LinearLayoutManager.VERTICAL,
-                        R.dimen.activity_margin
-                )
-        );
-
-        carsAdapter = new CarsAdapter(this.carsList);
-        carsRecyclerView.setAdapter(carsAdapter);
+        init();
+        setListeners();
+        initDB();
 
         toggleEmptyCars();
-
-        carsRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this.getActivity(),
-                carsRecyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-
-                Car car = carsList.get(position);
-
-                CarClickListener.carItemClicked(car.getId());
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-                showActionsDialog(position);
-            }
-        }));
-
-        FloatingActionButton floatingActionButton = rootView.findViewById(R.id.floating_action_button);
-        if (floatingActionButton != null) {
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showCarDialog(false, null, -1);
-                }
-            });
-        }
 
         return rootView;
     }
@@ -214,11 +177,88 @@ public abstract class CarListingFragment extends BaseFragment {
         });
     }
 
+    public void toggleEmptyCars() {
+        if (databaseHelper != null) {
+            int count = 0;
+            if (fragmentLayoutName.equals(CarsFragment.NAME)) {
+                Log.d(TAG, "Getting cars count form db...");
+                count = databaseHelper.getCarsCount();
+                Log.d(TAG, "There is " + count + " cars in total");
+            } else if (fragmentLayoutName.equals(FavoritesFragment.NAME)) {
+                Log.d(TAG, "Getting favs cars count form db...");
+                count = databaseHelper.getFavCarsCount();
+                Log.d(TAG, "There is " + count + " fav cars");
+            }
+            if (count > 0) {
+                noCarsView.setVisibility(View.INVISIBLE);
+            } else {
+                noCarsView.setVisibility(View.VISIBLE);
+            }
+        } else {
+            Log.d(TAG, "databaseHelper is null, please initialise fragment...");
+        }
+    }
+
+    private void init() {
+
+        floatingActionButton = rootView.findViewById(R.id.floating_action_button);
+
+        mLayoutManager = new LinearLayoutManager(this.getActivity());
+
+        noCarsView = rootView.findViewById(R.id.empty_car_view);
+        carsRecyclerView = rootView.findViewById(R.id.recycler_view);
+        carsRecyclerView.setLayoutManager(mLayoutManager);
+        carsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        carsRecyclerView.addItemDecoration(
+                new DividerItemDecoration(
+                        this.getActivity(),
+                        LinearLayoutManager.VERTICAL,
+                        R.dimen.activity_margin
+                )
+        );
+
+        carsAdapter = new CarsAdapter(this.carsList);
+        carsRecyclerView.setAdapter(carsAdapter);
+    }
+
+    private void setListeners() {
+
+        carsRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this.getActivity(),
+                carsRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+
+                Car car = carsList.get(position);
+
+                CarClickListener.carItemClicked(car.getId());
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                showActionsDialog(position);
+            }
+        }));
+
+        if (floatingActionButton != null) {
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showCarDialog(false, null, -1);
+                }
+            });
+        }
+    }
+
+    private void initDB() {
+
+        databaseHelper = DatabaseHelper.getInstance(this.getActivity());
+    }
+
     public void updateCar(Car c, int position) {
 
         Log.d(TAG, "Car to be updated: " + Car.toString(c));
         int result = databaseHelper.updateCar(c);
-        Log.d(TAG, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
+        Log.d(TAG, result == 1 ? "Car updated on database" : "Unable to update car on database: " + result);
 
         if (c.getFavorite() == 1) {
             carsList.set(position, c);
@@ -248,27 +288,5 @@ public abstract class CarListingFragment extends BaseFragment {
         carsList.remove(position);
         carsAdapter.notifyItemRemoved(position);
         toggleEmptyCars();
-    }
-
-    public void toggleEmptyCars() {
-        if (databaseHelper != null) {
-            int count = 0;
-            if (fragmentLayoutName.equals(CarsFragment.NAME)) {
-                Log.d(TAG, "Getting cars count form db...");
-                count = databaseHelper.getCarsCount();
-                Log.d(TAG, "There is " + count + " cars in total");
-            } else if (fragmentLayoutName.equals(FavoritesFragment.NAME)) {
-                Log.d(TAG, "Getting favs cars count form db...");
-                count = databaseHelper.getFavCarsCount();
-                Log.d(TAG, "There is " + count + " fav cars");
-            }
-            if (count > 0) {
-                noCarsView.setVisibility(View.INVISIBLE);
-            } else {
-                noCarsView.setVisibility(View.VISIBLE);
-            }
-        } else {
-            Log.d(TAG, "databaseHelper is null, please initialise fragment...");
-        }
     }
 }
