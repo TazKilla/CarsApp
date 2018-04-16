@@ -15,7 +15,6 @@ import java.util.List;
 
 public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
 
-    private Context context;
     private List<Car> carsList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -31,8 +30,7 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
         }
     }
 
-    public CarsAdapter(Context context, List<Car> carsList) {
-        this.context = context;
+    public CarsAdapter(List<Car> carsList) {
         this.carsList = carsList;
     }
 

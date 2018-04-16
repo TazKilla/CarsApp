@@ -14,7 +14,7 @@
         android:layout_height="match_parent" />
 
     <TextView
-        android:id="@+id/empty_car_view"
+        android:id="@+id/empty_settings_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -23,5 +23,15 @@
         android:text="@string/msg_no_item"
         android:textColor="@color/msg_no_cars"
         android:textSize="@dimen/msg_no_car" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_if_circle_add_24dp" />
 
 </RelativeLayout>

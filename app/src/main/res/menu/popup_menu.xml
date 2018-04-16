@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.musala.groche.carsapp.views.HomeActivity">
+
+    <item
+        android:id="@+id/menu_manufacturer"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/title_manufacturers"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_engine"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/title_manufacturers"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_fuel"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/title_manufacturers"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/menu_transmission"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/title_manufacturers"
+        android:visible="true"/>
+</menu>

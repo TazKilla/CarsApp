@@ -2,7 +2,7 @@ package com.musala.groche.carsapp.database.model;
 
 import java.io.Serializable;
 
-public class Car implements Serializable{
+public class Car implements Serializable {
     public static final String TABLE_NAME = "car";
 
     public static final String COLUMN_ID = "id";

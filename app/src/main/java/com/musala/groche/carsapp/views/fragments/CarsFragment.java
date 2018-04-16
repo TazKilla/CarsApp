@@ -6,24 +6,24 @@ import com.musala.groche.carsapp.database.model.Car;
 
 import java.util.List;
 
-public class FavoritesFragment extends CarListingFragment {
+public class CarsFragment extends CarListingFragment {
 
-    public static final String NAME = "content_favs_frag";
-    private static final String TAG = "FavoritesFragment";
+    public static final String NAME = "content_cars_frag";
+    private static final String TAG = "CarsFragment";
 
-    private String title = "Favorites";
+    private String title = "Cars";
 
     private boolean root = true;
 
-    public static FavoritesFragment newInstance(List<Car> carsList, int layoutId) {
+    public static CarsFragment newInstance(List<Car> carsList, int layoutId) {
 
-        FavoritesFragment fragment = new FavoritesFragment();
+        CarsFragment fragment = new CarsFragment();
         fragment.fragmentLayoutId = layoutId;
         fragment.setCarsList(carsList);
         fragment.fragmentLayoutName = NAME;
         fragment.usesCars = true;
 
-        Log.d(TAG, "New FavoritesFragment instance: \n");
+        Log.d(TAG, "New CarsFragment instance: \n");
         for (Car car : fragment.carsList) {
             Log.d(TAG, Car.toString(car) + "\n");
         }
@@ -44,3 +44,4 @@ public class FavoritesFragment extends CarListingFragment {
         return title;
     }
 }
+

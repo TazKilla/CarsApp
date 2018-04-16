@@ -8,13 +8,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.musala.groche.carsapp.database.model.Car;
+import com.musala.groche.carsapp.database.model.Engine;
+import com.musala.groche.carsapp.database.model.Fuel;
+import com.musala.groche.carsapp.database.model.Manufacturer;
+import com.musala.groche.carsapp.database.model.Transmission;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "cars_db";
 
     public DatabaseHelper(Context context) {
@@ -24,11 +28,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Car.CREATE_TABLE);
+//        db.execSQL(Manufacturer.CREATE_TABLE);
+//        db.execSQL(Engine.CREATE_TABLE);
+//        db.execSQL(Fuel.CREATE_TABLE);
+//        db.execSQL(Transmission.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + Car.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + Manufacturer.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + Engine.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + Fuel.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + Transmission.TABLE_NAME);
         onCreate(db);
     }
 

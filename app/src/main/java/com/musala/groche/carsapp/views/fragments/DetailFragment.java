@@ -1,6 +1,5 @@
 package com.musala.groche.carsapp.views.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -13,10 +12,13 @@ import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.DatabaseHelper;
 import com.musala.groche.carsapp.database.model.Car;
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends BaseFragment {
 
     private static final String TAG = "DetailFragment";
     public static final String NAME = "content_dtls_frag";
+    public String title = "Car details";
+
+    private boolean root = false;
 
     private Car car;
     private TextView favBtn;
@@ -58,7 +60,7 @@ public class DetailFragment extends Fragment {
                 if (car.getFavorite() == 1) {
                     car.setFavorite(0);
                     updateCar(car);
-                    favTextView.setText(R.string.empty_string);
+                    favTextView.setText("");
                     favBtn.setText("+");
                 } else {
                     car.setFavorite(1);
@@ -111,7 +113,7 @@ public class DetailFragment extends Fragment {
         textView.setText(this.car.getImgurl());
         switch (this.car.getFavorite()) {
             case 0:
-                favTextView.setText(R.string.empty_string);
+                favTextView.setText("");
                 break;
             case 1:
                 favTextView.setText(R.string.lbl_favorite);
@@ -121,10 +123,27 @@ public class DetailFragment extends Fragment {
         return rootView;
     }
 
-    private void updateCar(Car c) {
+    public void updateCar(Car c) {
 
         Log.d(NAME, "Car to be updated: " + Car.toString(c));
         int result = databaseHelper.updateCar(c);
         Log.d(NAME, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public String getName() {
+        return NAME;
+    }
+
+    public boolean isRoot() {
+        return root;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 }
