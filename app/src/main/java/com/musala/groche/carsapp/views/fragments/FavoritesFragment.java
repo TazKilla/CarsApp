@@ -24,7 +24,7 @@ public class FavoritesFragment extends CarListingFragment {
 
         Log.d(TAG, "New FavoritesFragment instance: \n");
         for (Car car : fragment.carsList) {
-            Log.d(TAG, Car.toString(car) + "\n");
+            Log.d(TAG, car.toString() + "\n");
         }
 
         return fragment;

@@ -1,5 +1,7 @@
 package com.musala.groche.carsapp.utils;
 
 public interface RecyclerViewItemClickInterface {
-    void carItemClicked(int carId);
+    void carElementClicked(int carId);
+
+    void  itemElementClicked(String itemTable, int itemId);
 }

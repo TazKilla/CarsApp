@@ -5,12 +5,20 @@ import java.util.List;
 
 public class Manufacturer extends BaseItem {
 
-    private static String tableName = "manufacturer";
+    public final static String TABLE_NAME = "manufacturer";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + "(" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_LABEL + " TEXT, " +
+                    COLUMN_DESCRIPTION + " TEXT, " +
+                    COLUMN_IMGURL + " TEXT" +
+                    ")";
 
     public Manufacturer() {}
 
     public Manufacturer(int id, String label, String description, String imgurl) {
-        super(tableName, id, label, description, imgurl);
+        super(id, label, description, imgurl);
     }
 
     public static List<Manufacturer> getList(List<BaseItem> itemList) {

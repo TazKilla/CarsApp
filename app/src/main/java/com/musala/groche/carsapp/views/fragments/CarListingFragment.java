@@ -230,7 +230,7 @@ public abstract class CarListingFragment extends BaseFragment {
 
                 Car car = carsList.get(position);
 
-                CarClickListener.carItemClicked(car.getId());
+                CarClickListener.carElementClicked(car.getId());
             }
 
             @Override
@@ -256,7 +256,7 @@ public abstract class CarListingFragment extends BaseFragment {
 
     public void updateCar(Car c, int position) {
 
-        Log.d(TAG, "Car to be updated: " + Car.toString(c));
+        Log.d(TAG, "Car to be updated: " + c.toString());
         int result = databaseHelper.updateCar(c);
         Log.d(TAG, result == 1 ? "Car updated on database" : "Unable to update car on database: " + result);
 

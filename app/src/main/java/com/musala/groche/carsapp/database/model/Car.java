@@ -175,17 +175,17 @@ public class Car implements Serializable {
         this.favorite = favorite;
     }
 
-    public static String toString(Car car) {
+    public String toString() {
         return "Car description: \n" +
-                "ID: " + car.getId() + "\n" +
-                "Manufacturer: " + car.getManufacturer() + "\n" +
-                "Model: " + car.getModel() + "\n" +
-                "Year: " + car.getYear() + "\n" +
-                "Price: " + car.getPrice() + "\n" +
-                "Engine: " + car.getEngine() + "\n" +
-                "Transmission: " + car.getTransmission() + "\n" +
-                "Description: " + car.getDescription() + "\n" +
-                "Image URL: " + car.getImgurl() + "\n" +
-                "Favorite: " + car.getFavorite() + "\n";
+                "ID: " + this.getId() + "\n" +
+                "Manufacturer: " + this.getManufacturer() + "\n" +
+                "Model: " + this.getModel() + "\n" +
+                "Year: " + this.getYear() + "\n" +
+                "Price: " + this.getPrice() + "\n" +
+                "Engine: " + this.getEngine() + "\n" +
+                "Transmission: " + this.getTransmission() + "\n" +
+                "Description: " + this.getDescription() + "\n" +
+                "Image URL: " + this.getImgurl() + "\n" +
+                "Favorite: " + this.getFavorite() + "\n";
     }
 }

@@ -2,22 +2,12 @@ package com.musala.groche.carsapp.database.model;
 
 import java.io.Serializable;
 
-public class BaseItem implements Serializable {
-
-    public static String TABLE_NAME;
+public abstract class BaseItem implements Serializable {
 
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_LABEL = "label";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_IMGURL = "imgurl";
-
-    public static final String CREATE_TABLE =
-            "CREATE TABLE " + TABLE_NAME + "(" +
-                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_LABEL + " TEXT, " +
-                    COLUMN_DESCRIPTION + " TEXT, " +
-                    COLUMN_IMGURL + " TEXT, " +
-                    ")";
 
     protected int id;
     protected String label;
@@ -26,11 +16,50 @@ public class BaseItem implements Serializable {
 
     public BaseItem() {}
 
-    public BaseItem(String tableName, int id, String label, String description, String imgurl) {
-        TABLE_NAME = tableName;
+    public BaseItem(int id, String label, String description, String imgurl) {
         this.id = id;
         this.label = label;
         this.description = description;
         this.imgurl = imgurl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImgurl() {
+        return imgurl;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImgurl(String imgurl) {
+        this.imgurl = imgurl;
+    }
+
+    public String toString() {
+        return "Item description: \n" +
+                "ID: " + this.getId() + "\n" +
+                "Label: " + this.getLabel() + "\n" +
+                "Description: " + this.getDescription() + "\n" +
+                "Image URL: " + this.getImgurl() + "\n";
     }
 }

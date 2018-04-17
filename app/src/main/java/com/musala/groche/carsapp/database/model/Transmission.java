@@ -5,12 +5,20 @@ import java.util.List;
 
 public class Transmission extends BaseItem {
 
-    private static String tableName = "transmission";
+    public final static String TABLE_NAME = "transmission";
+
+    public static final String CREATE_TABLE =
+            "CREATE TABLE " + TABLE_NAME + "(" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_LABEL + " TEXT, " +
+                    COLUMN_DESCRIPTION + " TEXT, " +
+                    COLUMN_IMGURL + " TEXT" +
+                    ")";
 
     public Transmission() {}
 
     public Transmission(int id, String label, String description, String imgurl) {
-        super(tableName, id, label, description, imgurl);
+        super(id, label, description, imgurl);
     }
 
     public static List<Transmission> getList(List<BaseItem> itemList) {

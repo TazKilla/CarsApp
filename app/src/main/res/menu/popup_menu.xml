@@ -13,18 +13,18 @@
     <item
         android:id="@+id/menu_engine"
         app:showAsAction="ifRoom|withText"
-        android:title="@string/title_manufacturers"
+        android:title="@string/title_engines"
         android:visible="true"/>
 
     <item
         android:id="@+id/menu_fuel"
         app:showAsAction="ifRoom|withText"
-        android:title="@string/title_manufacturers"
+        android:title="@string/title_fuels"
         android:visible="true"/>
 
     <item
         android:id="@+id/menu_transmission"
         app:showAsAction="ifRoom|withText"
-        android:title="@string/title_manufacturers"
+        android:title="@string/title_transmissions"
         android:visible="true"/>
 </menu>

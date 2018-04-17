@@ -17,10 +17,19 @@
 
     <string name="lbl_new_car_title">New Car</string>
     <string name="lbl_edit_car_title">Edit Car</string>
+    <string name="lbl_new_manufacturer_title">New Manufacturer</string>
+    <string name="lbl_edit_manufacturer_title">Edit Manufacturer</string>
+    <string name="lbl_new_engine_title">New Engine</string>
+    <string name="lbl_edit_engine_title">Edit Engine</string>
+    <string name="lbl_new_fuel_title">New Fuel</string>
+    <string name="lbl_edit_fuel_title">Edit Fuel</string>
+    <string name="lbl_new_transmission_title">New Transmission</string>
+    <string name="lbl_edit_transmission_title">Edit Transmission</string>
     <string name="lbl_favorite">Favorite</string>
 
     <string name="hint_enter_manuf">Manufacturer</string>
     <string name="hint_enter_model">Model</string>
+    <string name="hint_enter_label">Label</string>
     <string name="hint_enter_year">Year</string>
     <string name="hint_enter_price">Price</string>
     <string name="hint_enter_engine">Engine</string>

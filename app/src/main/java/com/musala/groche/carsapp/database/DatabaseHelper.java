@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.musala.groche.carsapp.database.model.BaseItem;
 import com.musala.groche.carsapp.database.model.Car;
 import com.musala.groche.carsapp.database.model.Engine;
 import com.musala.groche.carsapp.database.model.Fuel;
@@ -20,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "cars_db";
+    private static final String TAG = "DatabaseHelper";
     private static DatabaseHelper instance = null;
 
     private DatabaseHelper(Context context) {
@@ -36,21 +38,135 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Car.CREATE_TABLE);
-//        db.execSQL(Manufacturer.CREATE_TABLE);
-//        db.execSQL(Engine.CREATE_TABLE);
-//        db.execSQL(Fuel.CREATE_TABLE);
-//        db.execSQL(Transmission.CREATE_TABLE);
+        db.execSQL(Manufacturer.CREATE_TABLE);
+        db.execSQL(Engine.CREATE_TABLE);
+        db.execSQL(Fuel.CREATE_TABLE);
+        db.execSQL(Transmission.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + Car.TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS " + Manufacturer.TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS " + Engine.TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS " + Fuel.TABLE_NAME);
-//        db.execSQL("DROP TABLE IF EXISTS " + Transmission.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Manufacturer.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Engine.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Fuel.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Transmission.TABLE_NAME);
         onCreate(db);
     }
+
+    // Items management
+
+    public long insertItem(BaseItem item, String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(BaseItem.COLUMN_LABEL, item.getLabel());
+        values.put(BaseItem.COLUMN_DESCRIPTION, item.getDescription());
+        values.put(BaseItem.COLUMN_IMGURL, item.getImgurl());
+
+        long id = db.insert(tableName, null, values);
+
+        db.close();
+
+        return id;
+    }
+
+    public BaseItem getItem(String tableName, long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(tableName,
+                new String[]{BaseItem.COLUMN_ID,
+                        BaseItem.COLUMN_LABEL,
+                        BaseItem.COLUMN_DESCRIPTION,
+                        BaseItem.COLUMN_IMGURL},
+                BaseItem.COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        BaseItem item = new BaseItem(
+                tableName,
+                cursor.getInt(cursor.getColumnIndex(BaseItem.COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_LABEL)),
+                cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_DESCRIPTION)),
+                cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_IMGURL))
+        );
+
+        cursor.close();
+        db.close();
+
+        return item;
+    }
+
+    public List<? extends BaseItem> getAllItems(String tableName) {
+        List<BaseItem> items = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + tableName +
+                " ORDER BY label ASC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                BaseItem item = new BaseItem();
+                item.setId(cursor.getInt(cursor.getColumnIndex(BaseItem.COLUMN_ID)));
+                item.setLabel(cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_LABEL)));
+                item.setDescription(cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_DESCRIPTION)));
+                item.setImgurl(cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_IMGURL)));
+
+                items.add(item);
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+        cursor.close();
+
+        Log.d(TAG, "Got " + tableName + " list: \n");
+        for (BaseItem item : items) {
+            Log.d(TAG, item.toString());
+        }
+
+        return items;
+    }
+
+    public int getItemsCount(String tableName) {
+        String countQuery = "SELECT * FROM " + tableName;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(countQuery,  null);
+
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count;
+    }
+
+    public int updateItem(BaseItem item, String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(BaseItem.COLUMN_LABEL, item.getLabel());
+        values.put(BaseItem.COLUMN_DESCRIPTION, item.getDescription());
+        values.put(BaseItem.COLUMN_IMGURL, item.getImgurl());
+
+//        Log.d(TAG, values.toString());
+
+        return db.update(tableName, values, BaseItem.COLUMN_ID + " =?",
+                new String[]{String.valueOf(item.getId())});
+    }
+
+    public void deleteItem(BaseItem item,String tableName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(tableName, BaseItem.COLUMN_ID + " =?",
+                new String[]{String.valueOf(item.getId())});
+        db.close();
+    }
+
+    // Cars management
 
     public long insertCar(Car car) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -225,44 +341,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(car.getId())});
         db.close();
     }
-
-    /*
-
-
-    public void updateCar(Car c, int position) {
-
-        Log.d(TAG, "Car to be updated: " + Car.toString(c));
-        int result = databaseHelper.updateCar(c);
-        Log.d(TAG, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
-
-        if (c.getFavorite() == 1) {
-            carsList.set(position, c);
-        } else {
-            carsList.remove(position);
-        }
-
-        carsAdapter.notifyItemChanged(position);
-        toggleEmptyCars();
-    }
-
-    private void createCar(Car car) {
-
-        long id = databaseHelper.insertCar(car);
-
-        car = databaseHelper.getCar(id);
-
-        if (car != null) {
-            carsList.add(0, car);
-            carsAdapter.notifyDataSetChanged();
-            toggleEmptyCars();
-        }
-    }
-
-    public void deleteCar(int position) {
-        databaseHelper.deleteCar(carsList.get(position));
-        carsList.remove(position);
-        carsAdapter.notifyItemRemoved(position);
-        toggleEmptyCars();
-    }
-     */
 }

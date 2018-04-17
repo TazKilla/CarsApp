@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_margin"
+    android:paddingRight="@dimen/activity_margin"
+    android:paddingTop="@dimen/activity_margin">
+
+    <TextView android:id="@+id/dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_10"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="8sp"
+        android:text="@string/lbl_new_manufacturer_title"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/lbl_new_car_title"
+        android:textStyle="normal" />
+
+    <EditText
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="top"
+        android:hint="@string/hint_enter_label"
+        android:inputType="textCapSentences|text"
+        android:textColorHint="@color/hint_enter_car"
+        android:textSize="@dimen/input_new_car" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="top"
+        android:hint="@string/hint_enter_description"
+        android:inputType="textCapSentences|textMultiLine"
+        android:lines="2"
+        android:textColorHint="@color/hint_enter_car"
+        android:textSize="@dimen/input_new_car" />
+
+    <EditText
+        android:id="@+id/imgurl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="top"
+        android:hint="@string/hint_enter_imgurl"
+        android:inputType="textCapSentences|text"
+        android:textColorHint="@color/hint_enter_car"
+        android:textSize="@dimen/input_new_car" />
+
+</LinearLayout>
