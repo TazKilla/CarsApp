@@ -13,18 +13,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.DatabaseHelper;
 import com.musala.groche.carsapp.database.model.Car;
+import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.utils.DividerItemDecoration;
 import com.musala.groche.carsapp.utils.RecyclerTouchListener;
 import com.musala.groche.carsapp.utils.RecyclerViewItemClickInterface;
 import com.musala.groche.carsapp.views.adapters.CarsAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CarListingFragment extends BaseFragment {
@@ -94,7 +98,12 @@ public abstract class CarListingFragment extends BaseFragment {
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
         alertDialogBuilderUserInput.setView(view);
 
-        final EditText inputManufacturer = view.findViewById(R.id.manufacturer);
+        List<String> manufacturersOptions = databaseHelper.getAllItemLabels(Item.MANUFACTURER_TABLE_NAME);
+        ArrayAdapter<String> manufacturerAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, manufacturersOptions);
+        Spinner manufacturerSpinner = view.findViewById(R.id.manufacturer_spinner);
+        manufacturerSpinner.setAdapter(manufacturerAdapter);
+
+//        final EditText inputManufacturer = view.findViewById(R.id.manufacturer);
         final EditText inputModel = view.findViewById(R.id.model);
         final EditText inputYear = view.findViewById(R.id.year);
         final EditText inputPrice = view.findViewById(R.id.price);
@@ -108,7 +117,7 @@ public abstract class CarListingFragment extends BaseFragment {
         dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_car_title) : getString(R.string.lbl_edit_car_title));
 
         if (shouldUpdate && car != null) {
-            inputManufacturer.setText(car.getManufacturer());
+//            inputManufacturer.setText(car.getManufacturer());
             inputModel.setText(car.getModel());
             inputYear.setText(String.valueOf(car.getYear()));
             inputPrice.setText(String.valueOf(car.getPrice()));
@@ -140,7 +149,7 @@ public abstract class CarListingFragment extends BaseFragment {
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(inputManufacturer.getText().toString()) ||
+                if (/*TextUtils.isEmpty(inputManufacturer.getText().toString()) ||*/
                         TextUtils.isEmpty(inputModel.getText().toString()) ||
                         TextUtils.isEmpty(inputYear.getText().toString()) ||
                         TextUtils.isEmpty(inputPrice.getText().toString()) ||
@@ -157,7 +166,7 @@ public abstract class CarListingFragment extends BaseFragment {
 
                 Car mCar = new Car();
 
-                mCar.setManufacturer(inputManufacturer.getText().toString());
+//                mCar.setManufacturer(inputManufacturer.getText().toString());
                 mCar.setModel(inputModel.getText().toString());
                 mCar.setYear(Integer.valueOf(inputYear.getText().toString()));
                 mCar.setPrice(Float.valueOf(inputPrice.getText().toString()));

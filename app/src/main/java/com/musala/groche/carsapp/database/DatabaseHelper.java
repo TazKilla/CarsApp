@@ -157,6 +157,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return items;
     }
 
+    public List<String> getAllItemLabels(String tableName) {
+        List<String> labels = new ArrayList<>();
+
+        String selectQuery = "SELECT " + Item.COLUMN_LABEL +
+                " FROM " + tableName +
+                " ORDER BY label ASC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        labels.add("Manufacturer");
+        if (cursor.moveToFirst()) {
+            do {
+                labels.add(cursor.getString(cursor.getColumnIndex(Item.COLUMN_LABEL)));
+            } while (cursor.moveToNext());
+        }
+
+        db.close();
+        cursor.close();
+
+        return labels;
+    }
+
     public int getItemsCount(String tableName) {
         String countQuery = "SELECT * FROM " + tableName;
         SQLiteDatabase db = this.getWritableDatabase();

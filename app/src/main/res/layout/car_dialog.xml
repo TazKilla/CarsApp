@@ -18,16 +18,26 @@
         android:textSize="@dimen/lbl_new_car_title"
         android:textStyle="normal" />
 
-    <EditText
-        android:id="@+id/manufacturer"
+    <Spinner
+        android:id="@+id/manufacturer_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:gravity="top"
-        android:hint="@string/hint_enter_manuf"
-        android:inputType="textCapSentences|text"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        android:textSize="@dimen/input_new_car">
+
+    </Spinner>
+
+    <!--<EditText-->
+        <!--android:id="@+id/manufacturer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:gravity="top"-->
+        <!--android:hint="@string/hint_enter_manuf"-->
+        <!--android:inputType="textCapSentences|text"-->
+        <!--android:textColorHint="@color/hint_enter_car"-->
+        <!--android:textSize="@dimen/input_new_car" />-->
 
     <EditText
         android:id="@+id/model"
