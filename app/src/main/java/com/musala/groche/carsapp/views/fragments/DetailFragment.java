@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.DatabaseHelper;
-import com.musala.groche.carsapp.database.model.BaseItem;
+import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.database.model.Car;
 
 public class DetailFragment extends BaseFragment {
@@ -21,7 +21,7 @@ public class DetailFragment extends BaseFragment {
     private final boolean root = false;
 
     private Car car;
-    private BaseItem item;
+    private Item item;
     private TextView favBtn;
     private FloatingActionButton fab;
     private TextView favTextView;
@@ -50,7 +50,7 @@ public class DetailFragment extends BaseFragment {
         return fragment;
     }
 
-    public static DetailFragment newInstance(BaseItem item) {
+    public static DetailFragment newInstance(Item item) {
 
         DetailFragment fragment = new DetailFragment();
         fragment.item = item;
@@ -87,7 +87,7 @@ public class DetailFragment extends BaseFragment {
         this.car = car;
     }
 
-    public void setItem(BaseItem item) {
+    public void setItem(Item item) {
         this.item = item;
     }
 

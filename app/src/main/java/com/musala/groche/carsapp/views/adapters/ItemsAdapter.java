@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
-import com.musala.groche.carsapp.database.model.BaseItem;
+import com.musala.groche.carsapp.database.model.Item;
 
 import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> {
 
-    private List<BaseItem> itemsList;
+    private List<Item> itemsList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView label;
@@ -29,7 +29,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
         }
     }
 
-    public ItemsAdapter(List<BaseItem> itemsList) {
+    public ItemsAdapter(List<Item> itemsList) {
         this.itemsList = itemsList;
     }
 
@@ -42,7 +42,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        BaseItem item = itemsList.get(position);
+        Item item = itemsList.get(position);
         holder.label.setText(item.getLabel());
         holder.description.setText(item.getDescription());
         holder.dot.setText(Html.fromHtml("&#8226;"));

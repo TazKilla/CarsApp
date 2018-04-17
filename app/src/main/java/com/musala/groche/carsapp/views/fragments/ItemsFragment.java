@@ -2,9 +2,7 @@ package com.musala.groche.carsapp.views.fragments;
 
 import android.util.Log;
 
-import com.musala.groche.carsapp.database.model.BaseItem;
-
-import org.modelmapper.ModelMapper;
+import com.musala.groche.carsapp.database.model.Item;
 
 import java.util.List;
 
@@ -17,11 +15,12 @@ public class ItemsFragment extends ItemListingFragment {
 
     private boolean root = false;
 
-    public static ItemsFragment newInstance(List<BaseItem> settingsList, int layoutId) {
+    public static ItemsFragment newInstance(List<Item> settingsList, int layoutId, String tableName) {
 
 //        ModelMapper modelMapper = new ModelMapper();
         ItemsFragment fragment = new ItemsFragment();
         fragment.fragmentLayoutId = layoutId;
+        fragment.setItemTable(tableName);
 
         fragment.setItemsList(settingsList);
 
@@ -29,14 +28,14 @@ public class ItemsFragment extends ItemListingFragment {
         fragment.usesCars = false;
 
         Log.d(TAG, "New ItemsFragment instance: \n");
-        for (BaseItem item : fragment.itemsList) {
+        for (Item item : fragment.itemsList) {
             Log.d(TAG, item.toString() + "\n");
         }
 
         return fragment;
     }
 
-//    private static List<BaseItem> getList(List<BaseItem> settingsList, int listType) {
+//    private static List<Item> getList(List<Item> settingsList, int listType) {
 //        switch (listType) {
 //            case 0:
 //                break;
@@ -51,7 +50,7 @@ public class ItemsFragment extends ItemListingFragment {
 //        return null;
 //    }
 
-//    public void setItemsList(List<BaseItem> itemsList) {
+//    public void setItemsList(List<Item> itemsList) {
 //        this.itemsList = itemsList;
 //    }
 

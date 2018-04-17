@@ -2,7 +2,12 @@ package com.musala.groche.carsapp.database.model;
 
 import java.io.Serializable;
 
-public abstract class BaseItem implements Serializable {
+public class Item implements Serializable {
+
+    public static final String MANUFACTURER_TABLE_NAME = "manufacturer";
+    public static final String ENGINE_TABLE_NAME = "engine";
+    public static final String FUEL_TABLE_NAME = "fuel";
+    public static final String TRANSMISSION_TABLE_NAME = "transmission";
 
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_LABEL = "label";
@@ -14,9 +19,9 @@ public abstract class BaseItem implements Serializable {
     protected String description;
     protected String imgurl;
 
-    public BaseItem() {}
+    public Item() {}
 
-    public BaseItem(int id, String label, String description, String imgurl) {
+    public Item(int id, String label, String description, String imgurl) {
         this.id = id;
         this.label = label;
         this.description = description;

@@ -7,12 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.musala.groche.carsapp.database.model.BaseItem;
+import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.database.model.Car;
-import com.musala.groche.carsapp.database.model.Engine;
-import com.musala.groche.carsapp.database.model.Fuel;
-import com.musala.groche.carsapp.database.model.Manufacturer;
-import com.musala.groche.carsapp.database.model.Transmission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +19,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "cars_db";
     private static final String TAG = "DatabaseHelper";
     private static DatabaseHelper instance = null;
+
+    private static final String CREATE_MANUFACTURER_TABLE =
+            "CREATE TABLE " + Item.MANUFACTURER_TABLE_NAME + "(" +
+                    Item.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Item.COLUMN_LABEL + " TEXT, " +
+                    Item.COLUMN_DESCRIPTION + " TEXT, " +
+                    Item.COLUMN_IMGURL + " TEXT" +
+                    ")";
+    private static final String CREATE_ENGINE_TABLE =
+            "CREATE TABLE " + Item.ENGINE_TABLE_NAME + "(" +
+                    Item.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Item.COLUMN_LABEL + " TEXT, " +
+                    Item.COLUMN_DESCRIPTION + " TEXT, " +
+                    Item.COLUMN_IMGURL + " TEXT" +
+                    ")";
+    private static final String CREATE_FUEL_TABLE =
+            "CREATE TABLE " + Item.FUEL_TABLE_NAME + "(" +
+                    Item.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Item.COLUMN_LABEL + " TEXT, " +
+                    Item.COLUMN_DESCRIPTION + " TEXT, " +
+                    Item.COLUMN_IMGURL + " TEXT" +
+                    ")";
+    private static final String CREATE_TRANSMISSION_TABLE =
+            "CREATE TABLE " + Item.TRANSMISSION_TABLE_NAME + "(" +
+                    Item.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    Item.COLUMN_LABEL + " TEXT, " +
+                    Item.COLUMN_DESCRIPTION + " TEXT, " +
+                    Item.COLUMN_IMGURL + " TEXT" +
+                    ")";
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,32 +63,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Car.CREATE_TABLE);
-        db.execSQL(Manufacturer.CREATE_TABLE);
-        db.execSQL(Engine.CREATE_TABLE);
-        db.execSQL(Fuel.CREATE_TABLE);
-        db.execSQL(Transmission.CREATE_TABLE);
+        db.execSQL(CREATE_MANUFACTURER_TABLE);
+        db.execSQL(CREATE_ENGINE_TABLE);
+        db.execSQL(CREATE_FUEL_TABLE);
+        db.execSQL(CREATE_TRANSMISSION_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + Car.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + Manufacturer.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + Engine.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + Fuel.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + Transmission.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Item.MANUFACTURER_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Item.ENGINE_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Item.FUEL_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Item.TRANSMISSION_TABLE_NAME);
         onCreate(db);
     }
 
     // Items management
 
-    public long insertItem(BaseItem item, String tableName) {
+    public long insertItem(Item item, String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
-        values.put(BaseItem.COLUMN_LABEL, item.getLabel());
-        values.put(BaseItem.COLUMN_DESCRIPTION, item.getDescription());
-        values.put(BaseItem.COLUMN_IMGURL, item.getImgurl());
+        values.put(Item.COLUMN_LABEL, item.getLabel());
+        values.put(Item.COLUMN_DESCRIPTION, item.getDescription());
+        values.put(Item.COLUMN_IMGURL, item.getImgurl());
 
         long id = db.insert(tableName, null, values);
 
@@ -72,27 +97,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public BaseItem getItem(String tableName, long id) {
+    public Item getItem(String tableName, long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(tableName,
-                new String[]{BaseItem.COLUMN_ID,
-                        BaseItem.COLUMN_LABEL,
-                        BaseItem.COLUMN_DESCRIPTION,
-                        BaseItem.COLUMN_IMGURL},
-                BaseItem.COLUMN_ID + "=?",
+                new String[]{Item.COLUMN_ID,
+                        Item.COLUMN_LABEL,
+                        Item.COLUMN_DESCRIPTION,
+                        Item.COLUMN_IMGURL},
+                Item.COLUMN_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
         }
 
-        BaseItem item = new BaseItem(
-                tableName,
-                cursor.getInt(cursor.getColumnIndex(BaseItem.COLUMN_ID)),
-                cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_LABEL)),
-                cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_DESCRIPTION)),
-                cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_IMGURL))
+        Item item = new Item(
+                cursor.getInt(cursor.getColumnIndex(Item.COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndex(Item.COLUMN_LABEL)),
+                cursor.getString(cursor.getColumnIndex(Item.COLUMN_DESCRIPTION)),
+                cursor.getString(cursor.getColumnIndex(Item.COLUMN_IMGURL))
         );
 
         cursor.close();
@@ -101,8 +125,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return item;
     }
 
-    public List<? extends BaseItem> getAllItems(String tableName) {
-        List<BaseItem> items = new ArrayList<>();
+    public List<Item> getAllItems(String tableName) {
+        List<Item> items = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + tableName +
                 " ORDER BY label ASC";
@@ -112,11 +136,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                BaseItem item = new BaseItem();
-                item.setId(cursor.getInt(cursor.getColumnIndex(BaseItem.COLUMN_ID)));
-                item.setLabel(cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_LABEL)));
-                item.setDescription(cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_DESCRIPTION)));
-                item.setImgurl(cursor.getString(cursor.getColumnIndex(BaseItem.COLUMN_IMGURL)));
+                Item item = new Item();
+                item.setId(cursor.getInt(cursor.getColumnIndex(Item.COLUMN_ID)));
+                item.setLabel(cursor.getString(cursor.getColumnIndex(Item.COLUMN_LABEL)));
+                item.setDescription(cursor.getString(cursor.getColumnIndex(Item.COLUMN_DESCRIPTION)));
+                item.setImgurl(cursor.getString(cursor.getColumnIndex(Item.COLUMN_IMGURL)));
 
                 items.add(item);
             } while (cursor.moveToNext());
@@ -126,7 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
 
         Log.d(TAG, "Got " + tableName + " list: \n");
-        for (BaseItem item : items) {
+        for (Item item : items) {
             Log.d(TAG, item.toString());
         }
 
@@ -145,23 +169,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
-    public int updateItem(BaseItem item, String tableName) {
+    public int updateItem(Item item, String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(BaseItem.COLUMN_LABEL, item.getLabel());
-        values.put(BaseItem.COLUMN_DESCRIPTION, item.getDescription());
-        values.put(BaseItem.COLUMN_IMGURL, item.getImgurl());
+        values.put(Item.COLUMN_LABEL, item.getLabel());
+        values.put(Item.COLUMN_DESCRIPTION, item.getDescription());
+        values.put(Item.COLUMN_IMGURL, item.getImgurl());
 
 //        Log.d(TAG, values.toString());
 
-        return db.update(tableName, values, BaseItem.COLUMN_ID + " =?",
+        return db.update(tableName, values, Item.COLUMN_ID + " =?",
                 new String[]{String.valueOf(item.getId())});
     }
 
-    public void deleteItem(BaseItem item,String tableName) {
+    public void deleteItem(Item item, String tableName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(tableName, BaseItem.COLUMN_ID + " =?",
+        db.delete(tableName, Item.COLUMN_ID + " =?",
                 new String[]{String.valueOf(item.getId())});
         db.close();
     }

@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.DatabaseHelper;
-import com.musala.groche.carsapp.database.model.BaseItem;
+import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.utils.DividerItemDecoration;
 import com.musala.groche.carsapp.utils.RecyclerTouchListener;
 import com.musala.groche.carsapp.utils.RecyclerViewItemClickInterface;
@@ -65,7 +65,7 @@ public abstract class ItemListingFragment extends BaseFragment {
 
         return rootView;
     }
-    public void setItemsList(List<BaseItem> itemsList) {
+    public void setItemsList(List<Item> itemsList) {
         this.itemsList = itemsList;
     }
 
@@ -92,7 +92,7 @@ public abstract class ItemListingFragment extends BaseFragment {
         builder.show();
     }
 
-    protected void showItemDialog(final boolean shouldUpdate, final BaseItem item, final int position) {
+    protected void showItemDialog(final boolean shouldUpdate, final Item item, final int position) {
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this.getActivity());
         View view = layoutInflaterAndroid.inflate(R.layout.item_dialog, null);
 
@@ -104,7 +104,21 @@ public abstract class ItemListingFragment extends BaseFragment {
         final EditText inputImgUrl = view.findViewById(R.id.imgurl);
 
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
-        dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_manufacturer_title) : getString(R.string.lbl_edit_manufacturer_title));
+
+        switch (itemTable) {
+            case Item.MANUFACTURER_TABLE_NAME:
+                dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_manufacturer_title) : getString(R.string.lbl_edit_manufacturer_title));
+                break;
+            case Item.ENGINE_TABLE_NAME:
+                dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_engine_title) : getString(R.string.lbl_edit_engine_title));
+                break;
+            case Item.FUEL_TABLE_NAME:
+                dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_fuel_title) : getString(R.string.lbl_edit_fuel_title));
+                break;
+            case Item.TRANSMISSION_TABLE_NAME:
+                dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_transmission_title) : getString(R.string.lbl_edit_transmission_title));
+                break;
+        }
 
         if (shouldUpdate && item != null) {
             inputLabel.setText(item.getLabel());
@@ -142,7 +156,7 @@ public abstract class ItemListingFragment extends BaseFragment {
                     alertDialog.dismiss();
                 }
 
-                BaseItem mItem = new BaseItem();
+                Item mItem = new Item();
 
                 mItem.setLabel(inputLabel.getText().toString());
                 mItem.setDescription(inputDescription.getText().toString());
@@ -205,7 +219,7 @@ public abstract class ItemListingFragment extends BaseFragment {
             @Override
             public void onClick(View view, int position) {
 
-                BaseItem item = itemsList.get(position);
+                Item item = itemsList.get(position);
 
                 itemClickListener.itemElementClicked(itemTable, item.getId());
             }
@@ -231,7 +245,7 @@ public abstract class ItemListingFragment extends BaseFragment {
         databaseHelper = DatabaseHelper.getInstance(this.getActivity());
     }
 
-    public void updateItem(BaseItem item, int position) {
+    public void updateItem(Item item, int position) {
 
         Log.d(TAG, "Car to be updated: " + item.toString());
         int result = databaseHelper.updateItem(item, itemTable);
@@ -241,7 +255,7 @@ public abstract class ItemListingFragment extends BaseFragment {
         toggleEmptyItems();
     }
 
-    private void createItem(BaseItem item) {
+    private void createItem(Item item) {
 
         long id = databaseHelper.insertItem(item, itemTable);
 

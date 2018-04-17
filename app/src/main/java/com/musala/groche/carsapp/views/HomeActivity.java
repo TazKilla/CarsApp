@@ -17,12 +17,8 @@ import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.DatabaseHelper;
-import com.musala.groche.carsapp.database.model.BaseItem;
+import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.database.model.Car;
-import com.musala.groche.carsapp.database.model.Engine;
-import com.musala.groche.carsapp.database.model.Fuel;
-import com.musala.groche.carsapp.database.model.Manufacturer;
-import com.musala.groche.carsapp.database.model.Transmission;
 import com.musala.groche.carsapp.utils.RecyclerViewItemClickInterface;
 import com.musala.groche.carsapp.views.fragments.BaseFragment;
 import com.musala.groche.carsapp.views.fragments.CarListingFragment;
@@ -41,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private static boolean isFirstFrag = true;
 
     private List<Car> carsList = new ArrayList<>();
-    private List<BaseItem> itemsList = new ArrayList<>();
+    private List<Item> itemsList = new ArrayList<>();
     private TextView tabTitleView;
     private String currentFragName = CarsFragment.NAME;
     private String previousRootTitle;
@@ -96,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
 
         if (itemTable != null) {
             Log.d(TAG, "Asking for item id " + itemId + " on table " + itemTable);
-            BaseItem item = databaseHelper.getItem(itemTable, itemId);
+            Item item = databaseHelper.getItem(itemTable, itemId);
             int detailsFragmentID = getFragmentID(DetailFragment.NAME);
 
             detailsFragment =
@@ -211,27 +207,27 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_manufacturer:
-                        itemsList = databaseHelper.getAllItems(Manufacturer.TABLE_NAME);
+                        itemTable = Item.MANUFACTURER_TABLE_NAME;
+                        itemsList = databaseHelper.getAllItems(itemTable);
                         tabTitleView.setText(R.string.title_manufacturers);
-                        itemTable = Manufacturer.TABLE_NAME;
                         selectMenuItem(itemsFragment, ItemsFragment.NAME);
                         return true;
                     case R.id.menu_engine:
-                        itemsList = databaseHelper.getAllItems(Engine.TABLE_NAME);
+                        itemTable = Item.ENGINE_TABLE_NAME;
+                        itemsList = databaseHelper.getAllItems(itemTable);
                         tabTitleView.setText(R.string.title_engines);
-                        itemTable = Engine.TABLE_NAME;
                         selectMenuItem(itemsFragment, ItemsFragment.NAME);
                         return true;
                     case R.id.menu_fuel:
-                        itemsList = databaseHelper.getAllItems(Fuel.TABLE_NAME);
-                        tabTitleView.setText(R.string.title_engines);
-                        itemTable = Fuel.TABLE_NAME;
+                        itemTable = Item.FUEL_TABLE_NAME;
+                        itemsList = databaseHelper.getAllItems(itemTable);
+                        tabTitleView.setText(R.string.title_fuels);
                         selectMenuItem(itemsFragment, ItemsFragment.NAME);
                         return true;
                     case R.id.menu_transmission:
-                        itemsList = databaseHelper.getAllItems(Transmission.TABLE_NAME);
-                        tabTitleView.setText(R.string.title_engines);
-                        itemTable = Transmission.TABLE_NAME;
+                        itemTable = Item.TRANSMISSION_TABLE_NAME;
+                        itemsList = databaseHelper.getAllItems(itemTable);
+                        tabTitleView.setText(R.string.title_transmissions);
                         selectMenuItem(itemsFragment, ItemsFragment.NAME);
                         return true;
                 }
@@ -280,7 +276,8 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
                     case ItemsFragment.NAME:
                         newFragment = ItemsFragment.newInstance(
                                 itemsList,
-                                fragmentID
+                                fragmentID,
+                                itemTable
                         );
                         itemsFragment = (ItemsFragment) newFragment;
                         break;
