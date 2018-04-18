@@ -25,19 +25,7 @@
         android:background="@android:color/transparent"
         android:gravity="top"
         android:textSize="@dimen/input_new_car">
-
     </Spinner>
-
-    <!--<EditText-->
-        <!--android:id="@+id/manufacturer"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:gravity="top"-->
-        <!--android:hint="@string/hint_enter_manuf"-->
-        <!--android:inputType="textCapSentences|text"-->
-        <!--android:textColorHint="@color/hint_enter_car"-->
-        <!--android:textSize="@dimen/input_new_car" />-->
 
     <EditText
         android:id="@+id/model"
@@ -72,27 +60,32 @@
         android:textColorHint="@color/hint_enter_car"
         android:textSize="@dimen/input_new_car" />
 
-    <EditText
-        android:id="@+id/engine"
+    <Spinner
+        android:id="@+id/engine_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:gravity="top"
-        android:hint="@string/hint_enter_engine"
-        android:inputType="number"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        android:textSize="@dimen/input_new_car">
+    </Spinner>
 
-    <EditText
-        android:id="@+id/transmission"
+    <Spinner
+        android:id="@+id/fuel_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:gravity="top"
-        android:hint="@string/hint_enter_transmission"
-        android:inputType="number"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        android:textSize="@dimen/input_new_car">
+    </Spinner>
+
+    <Spinner
+        android:id="@+id/transmission_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="top"
+        android:textSize="@dimen/input_new_car">
+    </Spinner>
 
     <EditText
         android:id="@+id/description"
@@ -102,7 +95,7 @@
         android:gravity="top"
         android:hint="@string/hint_enter_description"
         android:inputType="textCapSentences|textMultiLine"
-        android:lines="4"
+        android:lines="2"
         android:textColorHint="@color/hint_enter_car"
         android:textSize="@dimen/input_new_car" />
 

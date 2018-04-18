@@ -11,6 +11,7 @@ public class Car implements Serializable {
     public static final String COLUMN_YEAR = "year";
     public static final String COLUMN_PRICE = "price";
     public static final String COLUMN_ENGINE = "engine";
+    public static final String COLUMN_FUEL = "fuel";
     public static final String COLUMN_TRANSMISSION = "transmission";
     public static final String COLUMN_DESCRIPTION = "description";
     public static final String COLUMN_IMGURL = "imgurl";
@@ -53,11 +54,12 @@ public class Car implements Serializable {
     }
 
     private int id;
-    private String manufacturer;
+    private int manufacturer;
     private String model;
     private int year;
     private float price;
     private int engine;
+    private int fuel;
     private int transmission;
     private String description;
     private String imgurl;
@@ -66,29 +68,35 @@ public class Car implements Serializable {
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "(" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_MANUFACTURER + " TEXT, " +
+                    COLUMN_MANUFACTURER + " INTEGER, " +
                     COLUMN_MODEL + " TEXT, " +
                     COLUMN_YEAR + " INTEGER, " +
                     COLUMN_PRICE + " REAL, " +
                     COLUMN_ENGINE + " INTEGER, " +
+                    COLUMN_FUEL + " INTEGER, " +
                     COLUMN_TRANSMISSION + " INTEGER, " +
                     COLUMN_DESCRIPTION + " TEXT, " +
                     COLUMN_IMGURL + " TEXT, " +
-                    COLUMN_FAVORITE + " INTEGER" +
+                    COLUMN_FAVORITE + " INTEGER," +
+                    "FOREIGN KEY(" + COLUMN_MANUFACTURER + ") REFERENCES " + Item.MANUFACTURER_TABLE_NAME + "(id)," +
+                    "FOREIGN KEY(" + COLUMN_ENGINE + ") REFERENCES " + Item.ENGINE_TABLE_NAME + "(id)," +
+                    "FOREIGN KEY(" + COLUMN_FUEL + ") REFERENCES " + Item.FUEL_TABLE_NAME + "(id)," +
+                    "FOREIGN KEY(" + COLUMN_TRANSMISSION + ") REFERENCES " + Item.TRANSMISSION_TABLE_NAME + "(id)" +
                     ")";
 
     public Car() {
 
     }
 
-    public Car(int id, String manufacturer, String model, int year, float price, int engine,
-               int transmission, String description, String imgurl, int favorite) {
+    public Car(int id, int manufacturer, String model, int year, float price, int engine,
+               int fuel, int transmission, String description, String imgurl, int favorite) {
         this.id = id;
         this.manufacturer = manufacturer;
         this.model = model;
         this.year = year;
         this.price = price;
         this.engine = engine;
+        this.fuel = fuel;
         this.transmission = transmission;
         this.description = description;
         this.imgurl = imgurl;
@@ -103,11 +111,11 @@ public class Car implements Serializable {
         this.id = id;
     }
 
-    public String getManufacturer() {
+    public int getManufacturer() {
         return manufacturer;
     }
 
-    public void setManufacturer(String manufacturer) {
+    public void setManufacturer(int manufacturer) {
         this.manufacturer = manufacturer;
     }
 
@@ -141,6 +149,14 @@ public class Car implements Serializable {
 
     public void setEngine(int engine) {
         this.engine = engine;
+    }
+
+    public int getFuel() {
+        return fuel;
+    }
+
+    public void setFuel(int fuel) {
+        this.fuel = fuel;
     }
 
     public int getTransmission() {
@@ -183,6 +199,7 @@ public class Car implements Serializable {
                 "Year: " + this.getYear() + "\n" +
                 "Price: " + this.getPrice() + "\n" +
                 "Engine: " + this.getEngine() + "\n" +
+                "Fuel: " + this.getFuel() + "\n" +
                 "Transmission: " + this.getTransmission() + "\n" +
                 "Description: " + this.getDescription() + "\n" +
                 "Image URL: " + this.getImgurl() + "\n" +

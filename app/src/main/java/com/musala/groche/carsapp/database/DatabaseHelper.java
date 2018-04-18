@@ -2,6 +2,7 @@ package com.musala.groche.carsapp.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -10,15 +11,20 @@ import android.util.Log;
 import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.database.model.Car;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "cars_db";
     private static final String TAG = "DatabaseHelper";
     private static DatabaseHelper instance = null;
+    private Context context;
 
     private static final String CREATE_MANUFACTURER_TABLE =
             "CREATE TABLE " + Item.MANUFACTURER_TABLE_NAME + "(" +
@@ -51,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public static DatabaseHelper getInstance(Context context) {
@@ -67,6 +74,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ENGINE_TABLE);
         db.execSQL(CREATE_FUEL_TABLE);
         db.execSQL(CREATE_TRANSMISSION_TABLE);
+
+        AssetManager assetManager = context.getAssets();
+        String[] itemFiles = {"manufacturer", "engine", "fuel", "transmission"};
+        int i = 0;
+        try {
+            for (;i < 4; i++) {
+//            InputStream inputStream = assetManager.open("cars_data.csv");
+                InputStream inputStream = assetManager.open(itemFiles[i] + "s.csv");
+                InputStreamReader streamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(streamReader);
+                String line;
+                String[] values;
+                while ((line = bufferedReader.readLine()) != null) {
+                    values = line.split(";");
+                    String insertCommand = String.format(
+                            "INSERT INTO " + itemFiles[i] + "(label, description, imgurl) " +
+                                    "VALUES ('%s', '%s', '%s')",
+                            values[0], values[1], values[2]);
+                    db.execSQL(insertCommand);
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to open data input file: " + itemFiles[i] + "s.csv");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -97,7 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public Item getItem(String tableName, long id) {
+    public Item getItemById(String tableName, long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(tableName,
@@ -107,6 +139,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         Item.COLUMN_IMGURL},
                 Item.COLUMN_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+
+        Item item = new Item(
+                cursor.getInt(cursor.getColumnIndex(Item.COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndex(Item.COLUMN_LABEL)),
+                cursor.getString(cursor.getColumnIndex(Item.COLUMN_DESCRIPTION)),
+                cursor.getString(cursor.getColumnIndex(Item.COLUMN_IMGURL))
+        );
+
+        cursor.close();
+        db.close();
+
+        return item;
+    }
+
+    public Item getItemByLabel(String tableName, String label) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(tableName,
+                new String[]{Item.COLUMN_ID,
+                        Item.COLUMN_LABEL,
+                        Item.COLUMN_DESCRIPTION,
+                        Item.COLUMN_IMGURL},
+                Item.COLUMN_LABEL + "=?",
+                new String[]{label}, null, null, null, null);
 
         if (cursor != null) {
             cursor.moveToFirst();
@@ -167,7 +227,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        labels.add("Manufacturer");
+//        labels.add("Select " + tableName);
         if (cursor.moveToFirst()) {
             do {
                 labels.add(cursor.getString(cursor.getColumnIndex(Item.COLUMN_LABEL)));
@@ -225,6 +285,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Car.COLUMN_YEAR, car.getYear());
         values.put(Car.COLUMN_PRICE, car.getPrice());
         values.put(Car.COLUMN_ENGINE, car.getEngine());
+        values.put(Car.COLUMN_FUEL, car.getFuel());
         values.put(Car.COLUMN_TRANSMISSION, car.getTransmission());
         values.put(Car.COLUMN_DESCRIPTION, car.getDescription());
         values.put(Car.COLUMN_IMGURL, car.getImgurl());
@@ -242,7 +303,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(Car.TABLE_NAME,
                 new String[]{Car.COLUMN_ID, Car.COLUMN_MANUFACTURER, Car.COLUMN_MODEL,
-                        Car.COLUMN_YEAR, Car.COLUMN_PRICE, Car.COLUMN_ENGINE,
+                        Car.COLUMN_YEAR, Car.COLUMN_PRICE, Car.COLUMN_ENGINE, Car.COLUMN_FUEL,
                         Car.COLUMN_TRANSMISSION, Car.COLUMN_DESCRIPTION, Car.COLUMN_IMGURL,
                         Car.COLUMN_FAVORITE},
                 Car.COLUMN_ID + "=?",
@@ -254,11 +315,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Car car = new Car(
                 cursor.getInt(cursor.getColumnIndex(Car.COLUMN_ID)),
-                cursor.getString(cursor.getColumnIndex(Car.COLUMN_MANUFACTURER)),
+                cursor.getInt(cursor.getColumnIndex(Car.COLUMN_MANUFACTURER)),
                 cursor.getString(cursor.getColumnIndex(Car.COLUMN_MODEL)),
                 cursor.getInt(cursor.getColumnIndex(Car.COLUMN_YEAR)),
                 cursor.getFloat(cursor.getColumnIndex(Car.COLUMN_PRICE)),
                 cursor.getInt(cursor.getColumnIndex(Car.COLUMN_ENGINE)),
+                cursor.getInt(cursor.getColumnIndex(Car.COLUMN_FUEL)),
                 cursor.getInt(cursor.getColumnIndex(Car.COLUMN_TRANSMISSION)),
                 cursor.getString(cursor.getColumnIndex(Car.COLUMN_DESCRIPTION)),
                 cursor.getString(cursor.getColumnIndex(Car.COLUMN_IMGURL)),
@@ -284,11 +346,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Car car = new Car();
                 car.setId(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_ID)));
-                car.setManufacturer(cursor.getString(cursor.getColumnIndex(Car.COLUMN_MANUFACTURER)));
+                car.setManufacturer(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_MANUFACTURER)));
                 car.setModel(cursor.getString(cursor.getColumnIndex(Car.COLUMN_MODEL)));
                 car.setYear(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_YEAR)));
                 car.setPrice(cursor.getFloat(cursor.getColumnIndex(Car.COLUMN_PRICE)));
                 car.setEngine(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_ENGINE)));
+                car.setFuel(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_FUEL)));
                 car.setTransmission(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_TRANSMISSION)));
                 car.setDescription(cursor.getString(cursor.getColumnIndex(Car.COLUMN_DESCRIPTION)));
                 car.setImgurl(cursor.getString(cursor.getColumnIndex(Car.COLUMN_IMGURL)));
@@ -318,11 +381,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Car car = new Car();
                 car.setId(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_ID)));
-                car.setManufacturer(cursor.getString(cursor.getColumnIndex(Car.COLUMN_MANUFACTURER)));
+                car.setManufacturer(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_MANUFACTURER)));
                 car.setModel(cursor.getString(cursor.getColumnIndex(Car.COLUMN_MODEL)));
                 car.setYear(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_YEAR)));
                 car.setPrice(cursor.getFloat(cursor.getColumnIndex(Car.COLUMN_PRICE)));
                 car.setEngine(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_ENGINE)));
+                car.setFuel(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_FUEL)));
                 car.setTransmission(cursor.getInt(cursor.getColumnIndex(Car.COLUMN_TRANSMISSION)));
                 car.setDescription(cursor.getString(cursor.getColumnIndex(Car.COLUMN_DESCRIPTION)));
                 car.setImgurl(cursor.getString(cursor.getColumnIndex(Car.COLUMN_IMGURL)));
@@ -371,6 +435,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Car.COLUMN_YEAR, car.getYear());
         values.put(Car.COLUMN_PRICE, car.getPrice());
         values.put(Car.COLUMN_ENGINE, car.getEngine());
+        values.put(Car.COLUMN_FUEL, car.getFuel());
         values.put(Car.COLUMN_TRANSMISSION, car.getTransmission());
         values.put(Car.COLUMN_DESCRIPTION, car.getDescription());
         values.put(Car.COLUMN_IMGURL, car.getImgurl());

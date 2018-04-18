@@ -13,11 +13,10 @@ public class ItemsFragment extends ItemListingFragment {
 
     private String title = "Items";
 
-    private boolean root = false;
+    private boolean root = true;
 
     public static ItemsFragment newInstance(List<Item> settingsList, int layoutId, String tableName) {
 
-//        ModelMapper modelMapper = new ModelMapper();
         ItemsFragment fragment = new ItemsFragment();
         fragment.fragmentLayoutId = layoutId;
         fragment.setItemTable(tableName);
@@ -34,25 +33,6 @@ public class ItemsFragment extends ItemListingFragment {
 
         return fragment;
     }
-
-//    private static List<Item> getList(List<Item> settingsList, int listType) {
-//        switch (listType) {
-//            case 0:
-//                break;
-//            case 1:
-//                break;
-//            case 2:
-//                break;
-//            case 3:
-//                break;
-//        }
-//
-//        return null;
-//    }
-
-//    public void setItemsList(List<Item> itemsList) {
-//        this.itemsList = itemsList;
-//    }
 
     public boolean isRoot() {
         return root;

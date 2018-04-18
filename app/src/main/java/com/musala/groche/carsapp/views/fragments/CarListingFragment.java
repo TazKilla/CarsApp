@@ -24,11 +24,11 @@ import com.musala.groche.carsapp.database.DatabaseHelper;
 import com.musala.groche.carsapp.database.model.Car;
 import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.utils.DividerItemDecoration;
+import com.musala.groche.carsapp.utils.OnSpinnerItemSelectedListener;
 import com.musala.groche.carsapp.utils.RecyclerTouchListener;
 import com.musala.groche.carsapp.utils.RecyclerViewItemClickInterface;
 import com.musala.groche.carsapp.views.adapters.CarsAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class CarListingFragment extends BaseFragment {
@@ -68,8 +68,13 @@ public abstract class CarListingFragment extends BaseFragment {
 
         return rootView;
     }
+
     public void setCarsList(List<Car> carsList) {
         this.carsList = carsList;
+    }
+
+    public void setManufacturersList(List<Item> manufacturersList) {
+        this.manufacturersList = manufacturersList;
     }
 
     public void showActionsDialog(final int position) {
@@ -98,17 +103,36 @@ public abstract class CarListingFragment extends BaseFragment {
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
         alertDialogBuilderUserInput.setView(view);
 
-        List<String> manufacturersOptions = databaseHelper.getAllItemLabels(Item.MANUFACTURER_TABLE_NAME);
-        ArrayAdapter<String> manufacturerAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, manufacturersOptions);
-        Spinner manufacturerSpinner = view.findViewById(R.id.manufacturer_spinner);
+        List<String> manufacturerOptions = databaseHelper.getAllItemLabels(Item.MANUFACTURER_TABLE_NAME);
+        ArrayAdapter<String> manufacturerAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, manufacturerOptions);
+        final Spinner manufacturerSpinner = view.findViewById(R.id.manufacturer_spinner);
         manufacturerSpinner.setAdapter(manufacturerAdapter);
+        manufacturerSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
+
+        List<String> engineOptions = databaseHelper.getAllItemLabels(Item.ENGINE_TABLE_NAME);
+        ArrayAdapter<String> engineAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, engineOptions);
+        final Spinner engineSpinner = view.findViewById(R.id.engine_spinner);
+        engineSpinner.setAdapter(engineAdapter);
+        engineSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
+
+        List<String> fuelOptions = databaseHelper.getAllItemLabels(Item.FUEL_TABLE_NAME);
+        ArrayAdapter<String> fuelAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, fuelOptions);
+        final Spinner fuelSpinner = view.findViewById(R.id.fuel_spinner);
+        fuelSpinner.setAdapter(fuelAdapter);
+        fuelSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
+
+        List<String> transmissionOptions = databaseHelper.getAllItemLabels(Item.TRANSMISSION_TABLE_NAME);
+        ArrayAdapter<String> transmissionAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, transmissionOptions);
+        final Spinner transmissionSpinner = view.findViewById(R.id.transmission_spinner);
+        transmissionSpinner.setAdapter(transmissionAdapter);
+        transmissionSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
 
 //        final EditText inputManufacturer = view.findViewById(R.id.manufacturer);
         final EditText inputModel = view.findViewById(R.id.model);
         final EditText inputYear = view.findViewById(R.id.year);
         final EditText inputPrice = view.findViewById(R.id.price);
-        final EditText inputEngine = view.findViewById(R.id.engine);
-        final EditText inputTransmission = view.findViewById(R.id.transmission);
+//        final EditText inputEngine = view.findViewById(R.id.engine);
+//        final EditText inputTransmission = view.findViewById(R.id.transmission);
         final EditText inputDescription = view.findViewById(R.id.description);
         final EditText inputImgUrl = view.findViewById(R.id.imgurl);
         final EditText inputFavorite = view.findViewById(R.id.favorite);
@@ -117,12 +141,22 @@ public abstract class CarListingFragment extends BaseFragment {
         dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_car_title) : getString(R.string.lbl_edit_car_title));
 
         if (shouldUpdate && car != null) {
+
+            Item manufacturer = databaseHelper.getItemById(Item.MANUFACTURER_TABLE_NAME, car.getManufacturer());
+            Item engine = databaseHelper.getItemById(Item.ENGINE_TABLE_NAME, car.getEngine());
+            Item fuel = databaseHelper.getItemById(Item.FUEL_TABLE_NAME, car.getFuel());
+            Item transmission = databaseHelper.getItemById(Item.TRANSMISSION_TABLE_NAME, car.getTransmission());
+
 //            inputManufacturer.setText(car.getManufacturer());
+            manufacturerSpinner.setSelection(manufacturerAdapter.getPosition(manufacturer.getLabel()));
             inputModel.setText(car.getModel());
             inputYear.setText(String.valueOf(car.getYear()));
             inputPrice.setText(String.valueOf(car.getPrice()));
-            inputEngine.setText(String.valueOf(car.getEngine()));
-            inputTransmission.setText(String.valueOf(car.getTransmission()));
+            engineSpinner.setSelection(engineAdapter.getPosition(engine.getLabel()));
+            fuelSpinner.setSelection(fuelAdapter.getPosition(fuel.getLabel()));
+            transmissionSpinner.setSelection(transmissionAdapter.getPosition(transmission.getLabel()));
+//            inputEngine.setText(String.valueOf(car.getEngine()));
+//            inputTransmission.setText(String.valueOf(car.getTransmission()));
             inputDescription.setText(car.getDescription());
             inputImgUrl.setText(car.getImgurl());
             inputFavorite.setText(String.valueOf(car.getFavorite()));
@@ -153,8 +187,8 @@ public abstract class CarListingFragment extends BaseFragment {
                         TextUtils.isEmpty(inputModel.getText().toString()) ||
                         TextUtils.isEmpty(inputYear.getText().toString()) ||
                         TextUtils.isEmpty(inputPrice.getText().toString()) ||
-                        TextUtils.isEmpty(inputEngine.getText().toString()) ||
-                        TextUtils.isEmpty(inputTransmission.getText().toString()) ||
+//                        TextUtils.isEmpty(inputEngine.getText().toString()) ||
+//                        TextUtils.isEmpty(inputTransmission.getText().toString()) ||
                         TextUtils.isEmpty(inputDescription.getText().toString()) ||
                         TextUtils.isEmpty(inputImgUrl.getText().toString()) ||
                         TextUtils.isEmpty(inputFavorite.getText().toString())) {
@@ -166,12 +200,30 @@ public abstract class CarListingFragment extends BaseFragment {
 
                 Car mCar = new Car();
 
-//                mCar.setManufacturer(inputManufacturer.getText().toString());
+                Item mManufacturer = databaseHelper.getItemByLabel(
+                        Item.MANUFACTURER_TABLE_NAME,
+                        manufacturerSpinner.getSelectedItem().toString()
+                );
+                Item mEngine = databaseHelper.getItemByLabel(
+                        Item.ENGINE_TABLE_NAME,
+                        engineSpinner.getSelectedItem().toString()
+                );
+                Item mFuel = databaseHelper.getItemByLabel(
+                        Item.FUEL_TABLE_NAME,
+                        fuelSpinner.getSelectedItem().toString()
+                );
+                Item mTransmission = databaseHelper.getItemByLabel(
+                        Item.TRANSMISSION_TABLE_NAME,
+                        transmissionSpinner.getSelectedItem().toString()
+                );
+
+                mCar.setManufacturer(mManufacturer.getId());
                 mCar.setModel(inputModel.getText().toString());
                 mCar.setYear(Integer.valueOf(inputYear.getText().toString()));
                 mCar.setPrice(Float.valueOf(inputPrice.getText().toString()));
-                mCar.setEngine(Integer.valueOf(inputEngine.getText().toString()));
-                mCar.setTransmission(Integer.valueOf(inputTransmission.getText().toString()));
+                mCar.setEngine(mEngine.getId());
+                mCar.setFuel(mFuel.getId());
+                mCar.setTransmission(mTransmission.getId());
                 mCar.setDescription(inputDescription.getText().toString());
                 mCar.setImgurl(inputImgUrl.getText().toString());
                 mCar.setFavorite(Integer.valueOf(inputFavorite.getText().toString()));
@@ -226,7 +278,7 @@ public abstract class CarListingFragment extends BaseFragment {
                 )
         );
 
-        carsAdapter = new CarsAdapter(this.carsList);
+        carsAdapter = new CarsAdapter(this.carsList, this.manufacturersList);
         carsRecyclerView.setAdapter(carsAdapter);
     }
 

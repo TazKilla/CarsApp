@@ -259,7 +259,7 @@ public abstract class ItemListingFragment extends BaseFragment {
 
         long id = databaseHelper.insertItem(item, itemTable);
 
-        item = databaseHelper.getItem(itemTable, id);
+        item = databaseHelper.getItemById(itemTable, id);
 
         if (item != null) {
             itemsList.add(0, item);

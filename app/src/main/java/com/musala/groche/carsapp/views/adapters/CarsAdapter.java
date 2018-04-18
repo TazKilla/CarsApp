@@ -2,19 +2,25 @@ package com.musala.groche.carsapp.views.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
+import com.musala.groche.carsapp.database.DatabaseHelper;
 import com.musala.groche.carsapp.database.model.Car;
+import com.musala.groche.carsapp.database.model.Item;
 
 import java.util.List;
 
 public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
 
+    private static final String TAG = "CarsAdapter";
+
     private List<Car> carsList;
+    private List<Item> manufacturersList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView manufacturer;
@@ -29,8 +35,9 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
         }
     }
 
-    public CarsAdapter(List<Car> carsList) {
+    public CarsAdapter(List<Car> carsList, List<Item> manufacturersList) {
         this.carsList = carsList;
+        this.manufacturersList = manufacturersList;
     }
 
     @Override
@@ -43,7 +50,9 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Car car = carsList.get(position);
-        holder.manufacturer.setText(car.getManufacturer());
+        Item manufacturer = findItem(car.getManufacturer(), manufacturersList);
+        Log.d(TAG, "Car's manufacturer: \n" + manufacturer.toString());
+        holder.manufacturer.setText(manufacturer.getLabel());
         holder.model.setText(car.getModel());
         holder.dot.setText(Html.fromHtml("&#8226;"));
     }
@@ -55,5 +64,14 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
         } else {
             return 0;
         }
+    }
+
+    private Item findItem(int id, List<Item> itemList) {
+        for (Item item : itemList) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
     }
 }

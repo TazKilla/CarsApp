@@ -33,6 +33,7 @@
     <string name="hint_enter_year">Year</string>
     <string name="hint_enter_price">Price</string>
     <string name="hint_enter_engine">Engine</string>
+    <string name="hint_enter_fuel">Fuel</string>
     <string name="hint_enter_transmission">Transmission</string>
     <string name="hint_enter_description">Description</string>
     <string name="hint_enter_imgurl">Image url</string>

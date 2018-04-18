@@ -27,8 +27,6 @@ public class DetailFragment extends BaseFragment {
     private TextView favTextView;
     private View rootView;
 
-    private DatabaseHelper databaseHelper;
-
 //    @Override
 //    public void onAttach(Activity activity) {
 //        super.onAttach(activity);
@@ -121,7 +119,7 @@ public class DetailFragment extends BaseFragment {
             fab = rootView.findViewById(R.id.details_fab);
 
             textView = rootView.findViewById(R.id.detail_manufacturer);
-            textView.setText(this.car.getManufacturer());
+            textView.setText(databaseHelper.getItemById(Item.MANUFACTURER_TABLE_NAME, this.car.getManufacturer()).getLabel());
             textView = rootView.findViewById(R.id.detail_model);
             textView.setText(this.car.getModel());
             textView = rootView.findViewById(R.id.detail_year);
@@ -129,23 +127,11 @@ public class DetailFragment extends BaseFragment {
             textView = rootView.findViewById(R.id.detail_price);
             textView.setText(String.valueOf(this.car.getPrice()));
             textView = rootView.findViewById(R.id.detail_engine);
-            switch (this.car.getEngine()) {
-                case 0:
-                    textView.setText(Car.EngineType.GASOLINE.toString());
-                    break;
-                case 1:
-                    textView.setText(Car.EngineType.DIESEL.toString());
-                    break;
-            }
+            textView.setText(databaseHelper.getItemById(Item.ENGINE_TABLE_NAME, this.car.getEngine()).getLabel());
+            textView = rootView.findViewById(R.id.detail_fuel);
+            textView.setText(databaseHelper.getItemById(Item.FUEL_TABLE_NAME, this.car.getFuel()).getLabel());
             textView = rootView.findViewById(R.id.detail_transmission);
-            switch (this.car.getTransmission()) {
-                case 0:
-                    textView.setText(Car.TransmissionType.MANUAL.toString());
-                    break;
-                case 1:
-                    textView.setText(Car.TransmissionType.AUTOMATIC.toString());
-                    break;
-            }
+            textView.setText(databaseHelper.getItemById(Item.TRANSMISSION_TABLE_NAME, this.car.getTransmission()).getLabel());
             textView = rootView.findViewById(R.id.detail_description);
             textView.setText(this.car.getDescription());
             textView = rootView.findViewById(R.id.detail_imgurl);

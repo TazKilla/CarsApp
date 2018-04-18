@@ -38,6 +38,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
 
     private List<Car> carsList = new ArrayList<>();
     private List<Item> itemsList = new ArrayList<>();
+    private List<Item> manufacturersList = new ArrayList<>();
+    private List<Item> enginesList = new ArrayList<>();
+    private List<Item> fuelsList = new ArrayList<>();
+    private List<Item> transmissionsList = new ArrayList<>();
     private TextView tabTitleView;
     private String currentFragName = CarsFragment.NAME;
     private String previousRootTitle;
@@ -49,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private BottomNavigationView bottomNavigationView;
     private Button backBtn;
     private PopupMenu popupMenu;
+    private boolean isAlreadyItemFragment = false;
 
     private DatabaseHelper databaseHelper;
 
@@ -92,7 +97,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
 
         if (itemTable != null) {
             Log.d(TAG, "Asking for item id " + itemId + " on table " + itemTable);
-            Item item = databaseHelper.getItem(itemTable, itemId);
+            Item item = databaseHelper.getItemById(itemTable, itemId);
             int detailsFragmentID = getFragmentID(DetailFragment.NAME);
 
             detailsFragment =
@@ -139,6 +144,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         databaseHelper =DatabaseHelper.getInstance(this);
 
         carsList.addAll(databaseHelper.getAllCars());
+        manufacturersList.addAll(databaseHelper.getAllItems(Item.MANUFACTURER_TABLE_NAME));
+        enginesList.addAll(databaseHelper.getAllItems(Item.ENGINE_TABLE_NAME));
+        fuelsList.addAll(databaseHelper.getAllItems(Item.FUEL_TABLE_NAME));
+        transmissionsList.addAll(databaseHelper.getAllItems(Item.TRANSMISSION_TABLE_NAME));
         Log.d(TAG, "Database initialized...");
     }
 
@@ -208,27 +217,35 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
                 switch (item.getItemId()) {
                     case R.id.menu_manufacturer:
                         itemTable = Item.MANUFACTURER_TABLE_NAME;
-                        itemsList = databaseHelper.getAllItems(itemTable);
+                        manufacturersList = databaseHelper.getAllItems(itemTable);
+                        itemsList = manufacturersList;
+                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_manufacturers);
-                        selectMenuItem(itemsFragment, ItemsFragment.NAME);
+                        switchFragment(itemsFragment);
                         return true;
                     case R.id.menu_engine:
                         itemTable = Item.ENGINE_TABLE_NAME;
-                        itemsList = databaseHelper.getAllItems(itemTable);
+                        enginesList = databaseHelper.getAllItems(itemTable);
+                        itemsList = enginesList;
+                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_engines);
-                        selectMenuItem(itemsFragment, ItemsFragment.NAME);
+                        switchFragment(itemsFragment);
                         return true;
                     case R.id.menu_fuel:
                         itemTable = Item.FUEL_TABLE_NAME;
-                        itemsList = databaseHelper.getAllItems(itemTable);
+                        fuelsList = databaseHelper.getAllItems(itemTable);
+                        itemsList = fuelsList;
+                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_fuels);
-                        selectMenuItem(itemsFragment, ItemsFragment.NAME);
+                        switchFragment(itemsFragment);
                         return true;
                     case R.id.menu_transmission:
                         itemTable = Item.TRANSMISSION_TABLE_NAME;
-                        itemsList = databaseHelper.getAllItems(itemTable);
+                        transmissionsList = databaseHelper.getAllItems(itemTable);
+                        itemsList = transmissionsList;
+                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_transmissions);
-                        selectMenuItem(itemsFragment, ItemsFragment.NAME);
+                        switchFragment(itemsFragment);
                         return true;
                 }
                 return false;
@@ -253,8 +270,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private void selectMenuItem(BaseFragment newFragment, String fragmentName) {
         int fragmentID = getFragmentID(fragmentName);
         backBtn.setVisibility(View.GONE);
-        if (!currentFragName.equals(fragmentName)
-                || (detailsFragment != null && detailsFragment.isVisible())) {
+        if (!currentFragName.equals(fragmentName) || (detailsFragment != null && detailsFragment.isVisible())) {
 
             if (newFragment == null) {
                 switch (fragmentName) {
@@ -262,14 +278,16 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
 
                         newFragment = FavoritesFragment.newInstance(
                                 carsList,
-                                fragmentID
+                                fragmentID,
+                                manufacturersList
                         );
                         favoritesFragment = (FavoritesFragment) newFragment;
                         break;
                     case CarsFragment.NAME:
                         newFragment = CarsFragment.newInstance(
                                 carsList,
-                                fragmentID
+                                fragmentID,
+                                manufacturersList
                         );
                         carsFragment = (CarsFragment) newFragment;
                         break;
@@ -289,8 +307,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
                 if (fragmentName.equals(ItemsFragment.NAME)) {
                     ((ItemListingFragment) newFragment).setItemsList(itemsList);
                     ((ItemListingFragment) newFragment).setItemTable(itemTable);
+                    itemsFragment = (ItemsFragment) newFragment;
                 } else {
                     ((CarListingFragment) newFragment).setCarsList(carsList);
+                    ((CarListingFragment) newFragment).setManufacturersList(manufacturersList);
                 }
             }
 

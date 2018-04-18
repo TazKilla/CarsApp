@@ -11,7 +11,8 @@ public abstract class BaseFragment extends Fragment {
 
     protected List<Car> carsList;
     protected List<Item> itemsList;
-    protected DatabaseHelper databaseHelper;
+    protected List<Item> manufacturersList;
+    protected DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getActivity());
     protected int fragmentLayoutId;
     protected String fragmentLayoutName;
     protected boolean usesCars;

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.model.Car;
+import com.musala.groche.carsapp.database.model.Item;
 
 import java.util.List;
 
@@ -14,11 +15,12 @@ public class CarsFragment extends CarListingFragment {
     private final String title = "Cars";
     private final boolean root = true;
 
-    public static CarsFragment newInstance(List<Car> carsList, int layoutId) {
+    public static CarsFragment newInstance(List<Car> carsList, int layoutId, List<Item> manufacturersList) {
 
         CarsFragment fragment = new CarsFragment();
         fragment.fragmentLayoutId = layoutId;
         fragment.setCarsList(carsList);
+        fragment.setManufacturersList(manufacturersList);
         fragment.fragmentLayoutName = NAME;
         fragment.usesCars = true;
 
