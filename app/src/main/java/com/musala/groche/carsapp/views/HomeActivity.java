@@ -1,5 +1,6 @@
 package com.musala.groche.carsapp.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.*;
 import android.support.design.widget.BottomNavigationView;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
@@ -52,8 +54,9 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private ItemsFragment itemsFragment;
     private BottomNavigationView bottomNavigationView;
     private Button backBtn;
-    private PopupMenu popupMenu;
-    private boolean isAlreadyItemFragment = false;
+    private ImageButton moreBtn;
+    private PopupMenu popupItemsMenu;
+    private PopupMenu popupSettingsMenu;
 
     private DatabaseHelper databaseHelper;
 
@@ -161,8 +164,11 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         tabTitleView = findViewById(R.id.tab_title);
         bottomNavigationView = findViewById(R.id.navigation);
         backBtn = findViewById(R.id.back_btn);
-        popupMenu = new PopupMenu(HomeActivity.this, bottomNavigationView, Gravity.END);
-        popupMenu.inflate(R.menu.popup_menu);
+        moreBtn = findViewById(R.id.button_more);
+        popupItemsMenu = new PopupMenu(HomeActivity.this, bottomNavigationView, Gravity.END);
+        popupItemsMenu.inflate(R.menu.popup_items_menu);
+        popupSettingsMenu = new PopupMenu(HomeActivity.this, moreBtn, Gravity.END);
+        popupSettingsMenu.inflate(R.menu.popup_settings_menu);
         Log.d(TAG, "App UI initialized...");
     }
 
@@ -187,7 +193,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
                                 break;
 
                             case R.id.navigation_items:
-                                popupMenu.show();
+                                popupItemsMenu.show();
                                 break;
                         }
 
@@ -204,14 +210,22 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
             }
         });
 
+        moreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupSettingsMenu.show();
+            }
+        });
+
         // Popup menu listeners
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+        popupItemsMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
 
             }
         });
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+        popupItemsMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
@@ -247,6 +261,25 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
                         tabTitleView.setText(R.string.title_transmissions);
                         switchFragment(itemsFragment);
                         return true;
+                }
+                return false;
+            }
+        });
+
+        popupSettingsMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+
+            }
+        });
+
+        popupSettingsMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_settings:
+                        showSettings();
+                        break;
                 }
                 return false;
             }
@@ -322,5 +355,12 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         } else {
             Log.d(TAG,"No way to display this tab: " + currentFragName + ", " + fragmentID);
         }
+    }
+
+    public void showSettings() {
+//        Toast.makeText(this, "You tried to open settings activity...", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
+//        finish();
     }
 }
