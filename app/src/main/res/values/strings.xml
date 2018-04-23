@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">CarsApp</string>
 
+    <string name="preferences_file_key" translatable="false">com.musala.groche.carsapp.user_prefs</string>
+
     <string name="title_cars">Cars</string>
     <string name="title_favorites">Favorites</string>
     <string name="title_items">Items</string>
@@ -18,10 +20,18 @@
 
     <string name="settings_views">Views</string>
     <string name="settings_languages">Languages</string>
-    <string name="settings_opt_list">List</string>
-    <string name="settings_opt_grid">Grid</string>
-    <string name="settings_opt_eng">English</string>
-    <string name="settings_opt_fre">French</string>
+    <string name="settings_title_list">List</string>
+    <string name="settings_title_grid">Grid</string>
+    <string name="settings_title_eng">English</string>
+    <string name="settings_title_fre">French</string>
+
+    <string name="settings_opt_list" translatable="false">list</string>
+    <string name="settings_opt_grid" translatable="false">grid</string>
+    <string name="settings_opt_en" translatable="false">en</string>
+    <string name="settings_opt_fr" translatable="false">fr_FR</string>
+
+    <string name="settings_selected_view" translatable="false">UserView</string>
+    <string name="settings_selected_lang" translatable="false">UserLang</string>
 
     <string name="lbl_new_car_title">New Car</string>
     <string name="lbl_edit_car_title">Edit Car</string>
@@ -44,7 +54,7 @@
     <string name="hint_enter_fuel">Fuel</string>
     <string name="hint_enter_transmission">Transmission</string>
     <string name="hint_enter_description">Description</string>
-    <string name="hint_enter_imgurl">Image url</string>
+    <string name="hint_enter_imgurl">Image URL</string>
     <string name="hint_enter_favorite">Favorite</string>
 
     <string name="toast_fill_every_fields">Please fill up every field</string>

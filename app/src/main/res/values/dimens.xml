@@ -17,5 +17,7 @@
     <dimen name="car_list_text">18sp</dimen>
     <dimen name="title">24sp</dimen>
     <dimen name="subtitle">20sp</dimen>
-    <dimen name="option">16dp</dimen>
+    <dimen name="option">16sp</dimen>
+    <dimen name="img_size">80dp</dimen>
+
 </resources>

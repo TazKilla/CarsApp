@@ -46,4 +46,14 @@ public class FavoritesFragment extends CarListingFragment {
     public String getTitle() {
         return title;
     }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.content_favs_frag;
+    }
+
+    @Override
+    public int getCarsCount() {
+        return databaseHelper.getFavCarsCount();
+    }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CarsApp</string>
+    <string name="title_cars">Voitures</string>
+    <string name="title_favorites">Favoris</string>
+    <string name="title_items">Elements</string>
+    <string name="title_settings">Paramètres</string>
+    <string name="title_details">Détails voiture</string>
+    <string name="title_manufacturers">Constructeurs</string>
+    <string name="title_engines">Motorisations</string>
+    <string name="title_fuels">Carburants</string>
+    <string name="title_transmissions">Boîtes de vitesses</string>
+    <string name="title_dialog">Choisissez une option</string>
+    <string name="msg_no_item">Désolé, aucun element disponible</string>
+    <string name="action_items">Elements</string>
+    <string name="activity_title_home">Notes</string>
+    <string name="settings_views">Affichage</string>
+    <string name="settings_languages">Langue</string>
+    <string name="settings_title_list">Liste</string>
+    <string name="settings_title_grid">Grille</string>
+    <string name="settings_title_eng">Anglais</string>
+    <string name="settings_title_fre">Français</string>
+    <string name="lbl_new_car_title">Nouvelle voiture</string>
+    <string name="lbl_edit_car_title">Editer la voiture</string>
+    <string name="lbl_new_manufacturer_title">Nouveau constructeur</string>
+    <string name="lbl_edit_manufacturer_title">Editer constructeur</string>
+    <string name="lbl_new_engine_title">Nouvelle motorisation</string>
+    <string name="lbl_edit_engine_title">Editer motorisation</string>
+    <string name="lbl_new_fuel_title">Nouveau carburant</string>
+    <string name="lbl_edit_fuel_title">Editer carburant</string>
+    <string name="lbl_new_transmission_title">Nouvelle boîte de vitesses</string>
+    <string name="lbl_edit_transmission_title">Editer boîte de vitesses</string>
+    <string name="lbl_favorite">Favori</string>
+    <string name="hint_enter_manuf">Constructeur</string>
+    <string name="hint_enter_model">Modèle</string>
+    <string name="hint_enter_label">Nom</string>
+    <string name="hint_enter_year">Année</string>
+    <string name="hint_enter_price">Prix</string>
+    <string name="hint_enter_engine">Motorisation</string>
+    <string name="hint_enter_fuel">Carburant</string>
+    <string name="hint_enter_transmission">Boîte de vitesses</string>
+    <string name="hint_enter_description">Description</string>
+    <string name="hint_enter_imgurl">URL de l\'image</string>
+    <string name="hint_enter_favorite">Favori</string>
+    <string name="toast_fill_every_fields">Veuillez remplir tous les champs</string>
+</resources>

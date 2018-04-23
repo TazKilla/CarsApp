@@ -55,10 +55,14 @@ public abstract class CarListingFragment extends BaseFragment {
         }
     }
 
+    public abstract int getLayoutId();
+
+    public abstract int getCarsCount();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(fragmentLayoutId, container, false);
+        rootView = inflater.inflate(getLayoutId(), container, false);
 
         init();
         setListeners();
@@ -241,15 +245,16 @@ public abstract class CarListingFragment extends BaseFragment {
     public void toggleEmptyCars() {
         if (databaseHelper != null) {
             int count = 0;
-            if (fragmentLayoutName.equals(CarsFragment.NAME)) {
-                Log.d(TAG, "Getting cars count form db...");
-                count = databaseHelper.getCarsCount();
-                Log.d(TAG, "There is " + count + " cars in total");
-            } else if (fragmentLayoutName.equals(FavoritesFragment.NAME)) {
-                Log.d(TAG, "Getting favs cars count form db...");
-                count = databaseHelper.getFavCarsCount();
-                Log.d(TAG, "There is " + count + " fav cars");
-            }
+//            if (fragmentLayoutName.equals(CarsFragment.NAME)) {
+//                Log.d(TAG, "Getting cars count form db...");
+//                count = databaseHelper.getCarsCount();
+//                Log.d(TAG, "There is " + count + " cars in total");
+//            } else if (fragmentLayoutName.equals(FavoritesFragment.NAME)) {
+//                Log.d(TAG, "Getting favs cars count form db...");
+//                count = databaseHelper.getFavCarsCount();
+//                Log.d(TAG, "There is " + count + " fav cars");
+//            }
+            count = getCarsCount();
             if (count > 0) {
                 noCarsView.setVisibility(View.INVISIBLE);
             } else {

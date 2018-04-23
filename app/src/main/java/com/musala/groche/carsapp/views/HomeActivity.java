@@ -1,6 +1,9 @@
 package com.musala.groche.carsapp.views;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.*;
 import android.support.design.widget.BottomNavigationView;
@@ -32,6 +35,7 @@ import com.musala.groche.carsapp.views.fragments.ItemsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity implements RecyclerViewItemClickInterface {
 
@@ -57,6 +61,9 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private ImageButton moreBtn;
     private PopupMenu popupItemsMenu;
     private PopupMenu popupSettingsMenu;
+    private SharedPreferences sharedPreferences;
+    private String locale;
+    private Configuration configuration;
 
     private DatabaseHelper databaseHelper;
 
@@ -68,6 +75,25 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         initDB();
         setListener();
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        newLocale = sharedPreferences.getString(getString(R.string.settings_selected_lang), getString(R.string.settings_opt_en));
+//        if (!newLocale.equals(locale)) {
+//
+//            switch (newLocale) {
+//                case "en":
+//                    configuration.setLocale(Locale.ENGLISH);
+//                    break;
+//                case "fr":
+//                    configuration.setLocale(Locale.FRANCE);
+//                    break;
+//            }
+//
+//            recreate();
+//        }
+//    }
 
     @Override
     public void onBackPressed() {
@@ -159,6 +185,23 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         Log.d(TAG, "Initializing app UI...");
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTheme(R.style.AppTheme);
+
+        sharedPreferences = this.getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        locale = sharedPreferences.getString(getString(R.string.settings_selected_lang), getString(R.string.settings_opt_en));
+        configuration = new Configuration(getResources().getConfiguration());
+
+        switch (locale) {
+            case "en":
+                configuration.setLocale(Locale.ENGLISH);
+                break;
+            case "fr_FR":
+                configuration.setLocale(Locale.FRANCE);
+                break;
+        }
+
+        // TODO refactor with Context createConfigurationContext()
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
+
         setContentView(R.layout.activity_home);
 
         tabTitleView = findViewById(R.id.tab_title);
@@ -286,6 +329,8 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         });
 
         // Select the default tab - Cars
+        bottomNavigationView.setSelectedItemId(R.id.navigation_favorites);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_cars);
         bottomNavigationView.setSelectedItemId(R.id.navigation_favorites);
         bottomNavigationView.setSelectedItemId(R.id.navigation_cars);
         Log.d(TAG, "Listeners initialized...");

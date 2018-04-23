@@ -46,5 +46,15 @@ public class CarsFragment extends CarListingFragment {
     public String getTitle() {
         return title;
     }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.content_cars_frag;
+    }
+
+    @Override
+    public int getCarsCount() {
+        return databaseHelper.getCarsCount();
+    }
 }
 
