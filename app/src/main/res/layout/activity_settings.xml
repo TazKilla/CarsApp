@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/weight_size"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -27,10 +27,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/weight_size"
         android:layout_weight="2"
         android:orientation="vertical"
-        android:layout_margin="@dimen/dimen_10">
+        android:layout_margin="@dimen/margin">
 
         <TextView
             android:layout_width="match_parent"
@@ -45,22 +45,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dimen_10">
+            android:layout_marginTop="@dimen/margin">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/label_checkBox_list"
                 android:text="@string/settings_title_list"
-                android:textSize="@dimen/option"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/checkBox_list"/>
+                android:layout_toStartOf="@+id/checkBox_list"
+                style="@style/setting_label"/>
 
             <CheckBox
                 android:id="@+id/checkBox_list"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onCheckboxClicked"/>
+                style="@style/settings_check_box"/>
 
         </RelativeLayout>
 
@@ -69,32 +64,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dimen_10">
+            android:layout_marginTop="@dimen/margin">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/label_checkBox_grid"
                 android:text="@string/settings_title_grid"
-                android:textSize="@dimen/option"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/checkBox_grid"/>
+                android:layout_toStartOf="@+id/checkBox_grid"
+                style="@style/setting_label"/>
 
             <CheckBox
                 android:id="@+id/checkBox_grid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onCheckboxClicked"/>
+                style="@style/settings_check_box"/>
 
         </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/weight_size"
         android:layout_weight="6"
         android:orientation="vertical"
-        android:layout_margin="@dimen/dimen_10">
+        android:layout_margin="@dimen/margin">
 
         <TextView
             android:layout_width="match_parent"
@@ -109,20 +99,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dimen_10">
+            android:layout_marginTop="@dimen/margin">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/label_checkBox_english"
                 android:text="@string/settings_title_eng"
-                android:textSize="@dimen/option"/>
+                android:layout_toStartOf="@+id/checkBox_english"
+                style="@style/setting_label"/>
 
             <CheckBox
                 android:id="@+id/checkBox_english"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onCheckboxClicked"/>
+                style="@style/settings_check_box"/>
 
         </RelativeLayout>
 
@@ -131,20 +118,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dimen_10">
+            android:layout_marginTop="@dimen/margin">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/label_checkBox_french"
                 android:text="@string/settings_title_fre"
-                android:textSize="@dimen/option"/>
+                android:layout_toStartOf="@+id/checkBox_french"
+                style="@style/setting_label"/>
 
             <CheckBox
                 android:id="@+id/checkBox_french"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:onClick="onCheckboxClicked"/>
+                style="@style/settings_check_box"/>
 
         </RelativeLayout>
 

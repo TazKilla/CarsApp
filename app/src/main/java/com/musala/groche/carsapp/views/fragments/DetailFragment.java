@@ -1,5 +1,6 @@
 package com.musala.groche.carsapp.views.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -15,10 +16,10 @@ import com.musala.groche.carsapp.database.model.Car;
 
 public class DetailFragment extends BaseFragment {
 
-    private static final String TAG = "DetailFragment";
-    public static final String NAME = "content_car_dtls_frag";
-    public final String title = "Car details";
+    public static String TAG = "DetailFragment";
+    public static String title;
     private final boolean root = false;
+    private Context context;
 
     private Car car;
     private Item item;
@@ -27,31 +28,22 @@ public class DetailFragment extends BaseFragment {
     private TextView favTextView;
     private View rootView;
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        try{
-//            backBtnListener = (RecyclerViewItemClickInterface) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString() +
-//                    " must implement ClickInterface");
-//        }
-//    }
-
-    public static DetailFragment newInstance(Car car) {
+    public static DetailFragment newInstance(Context context, Car car) {
 
         DetailFragment fragment = new DetailFragment();
         fragment.car = car;
+        fragment.context = context;
 
         Log.d(TAG, "New DetailFragment instance: \n" + car.toString());
 
         return fragment;
     }
 
-    public static DetailFragment newInstance(Item item) {
+    public static DetailFragment newInstance(Context context, Item item) {
 
         DetailFragment fragment = new DetailFragment();
         fragment.item = item;
+        fragment.context = context;
 
         Log.d(TAG, "New DetailFragment instance: \n" + item.toString());
 
@@ -61,11 +53,7 @@ public class DetailFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (car != null) {
-            rootView = inflater.inflate(R.layout.content_car_dtls_frag, container, false);
-        } else {
-            rootView = inflater.inflate(R.layout.content_item_dtls_frag, container, false);
-        }
+        rootView = inflater.inflate(R.layout.content_dtls_frag, container, false);
 
         init();
         setListeners();
@@ -76,9 +64,9 @@ public class DetailFragment extends BaseFragment {
 
     public void updateCar(Car c) {
 
-        Log.d(NAME, "Car to be updated: " + c.toString());
+        Log.d(TAG, "Car to be updated: " + c.toString());
         int result = databaseHelper.updateCar(c);
-        Log.d(NAME, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
+        Log.d(TAG, result == 1 ? "Car updated on databaseHelper" : "Unable to update car on databaseHelper: " + result);
     }
 
     public void setCar(Car car) {
@@ -90,36 +78,40 @@ public class DetailFragment extends BaseFragment {
     }
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
     public boolean isRoot() {
         return root;
     }
 
     @Override
     public String getTitle() {
-        return title;
+        if (car != null) {
+            return context.getString(R.string.title_car_details);
+        } else if (item != null) {
+            return context.getString(R.string.title_item_details);
+        } else {
+            return "";
+        }
     }
 
     private void init() {
 
         TextView textView;
+        favTextView = rootView.findViewById(R.id.detail_favorite);
+        favBtn = rootView.findViewById(R.id.favbtn);
+        fab = rootView.findViewById(R.id.details_fab);
 
         if (car != null) {
-            favTextView = rootView.findViewById(R.id.detail_favorite);
-            favBtn = rootView.findViewById(R.id.favbtn);
             if (car.getFavorite() == 1) {
                 favBtn.setText("-");
             } else {
                 favBtn.setText("+");
             }
-            fab = rootView.findViewById(R.id.details_fab);
 
             textView = rootView.findViewById(R.id.detail_manufacturer);
-            textView.setText(databaseHelper.getItemById(Item.MANUFACTURER_TABLE_NAME, this.car.getManufacturer()).getLabel());
+            textView.setText(databaseHelper.getItemById(
+                    Item.MANUFACTURER_TABLE_NAME,
+                    this.car.getManufacturer()).getLabel()
+            );
             textView = rootView.findViewById(R.id.detail_model);
             textView.setText(this.car.getModel());
             textView = rootView.findViewById(R.id.detail_year);
@@ -127,11 +119,20 @@ public class DetailFragment extends BaseFragment {
             textView = rootView.findViewById(R.id.detail_price);
             textView.setText(String.valueOf(this.car.getPrice()));
             textView = rootView.findViewById(R.id.detail_engine);
-            textView.setText(databaseHelper.getItemById(Item.ENGINE_TABLE_NAME, this.car.getEngine()).getLabel());
+            textView.setText(databaseHelper.getItemById(
+                    Item.ENGINE_TABLE_NAME,
+                    this.car.getEngine()).getLabel()
+            );
             textView = rootView.findViewById(R.id.detail_fuel);
-            textView.setText(databaseHelper.getItemById(Item.FUEL_TABLE_NAME, this.car.getFuel()).getLabel());
+            textView.setText(databaseHelper.getItemById(
+                    Item.FUEL_TABLE_NAME,
+                    this.car.getFuel()).getLabel()
+            );
             textView = rootView.findViewById(R.id.detail_transmission);
-            textView.setText(databaseHelper.getItemById(Item.TRANSMISSION_TABLE_NAME, this.car.getTransmission()).getLabel());
+            textView.setText(databaseHelper.getItemById(
+                    Item.TRANSMISSION_TABLE_NAME,
+                    this.car.getTransmission()).getLabel()
+            );
             textView = rootView.findViewById(R.id.detail_description);
             textView.setText(this.car.getDescription());
             textView = rootView.findViewById(R.id.detail_imgurl);
@@ -146,7 +147,23 @@ public class DetailFragment extends BaseFragment {
             }
         } else {
 
-            textView = rootView.findViewById(R.id.detail_label);
+            textView = rootView.findViewById(R.id.detail_manufacturer);
+            textView.setVisibility(View.GONE);
+            textView = rootView.findViewById(R.id.detail_year);
+            textView.setVisibility(View.GONE);
+            textView = rootView.findViewById(R.id.detail_price);
+            textView.setVisibility(View.GONE);
+            textView = rootView.findViewById(R.id.detail_engine);
+            textView.setVisibility(View.GONE);
+            textView = rootView.findViewById(R.id.detail_fuel);
+            textView.setVisibility(View.GONE);
+            textView = rootView.findViewById(R.id.detail_transmission);
+            textView.setVisibility(View.GONE);
+            favTextView.setVisibility(View.GONE);
+            favBtn.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
+
+            textView = rootView.findViewById(R.id.detail_model);
             textView.setText(this.item.getLabel());
             textView = rootView.findViewById(R.id.detail_description);
             textView.setText(this.item.getDescription());
@@ -180,5 +197,10 @@ public class DetailFragment extends BaseFragment {
     private void initDB() {
 
         databaseHelper = DatabaseHelper.getInstance(this.getActivity());
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.content_dtls_frag;
     }
 }

@@ -1,9 +1,8 @@
 package com.musala.groche.carsapp.views.adapters;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
-import com.musala.groche.carsapp.database.DatabaseHelper;
 import com.musala.groche.carsapp.database.model.Car;
 import com.musala.groche.carsapp.database.model.Item;
+import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
-import java.net.URL;
 import java.util.List;
 
 public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
@@ -29,6 +24,8 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
     private List<Car> carsList;
     private List<Item> manufacturersList;
     static Drawable tmpImage;
+    private String selectedViewType;
+    private Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,14 +41,28 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
         }
     }
 
-    public CarsAdapter(List<Car> carsList, List<Item> manufacturersList) {
+    public CarsAdapter(Context context, List<Car> carsList, List<Item> manufacturersList, String selectedViewType) {
         this.carsList = carsList;
         this.manufacturersList = manufacturersList;
+        this.selectedViewType = selectedViewType;
+        this.context = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.car_list_row, parent, false);
+
+        View itemView;
+
+        switch (selectedViewType) {
+            case "grid":
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.car_grid_element, parent, false);
+                break;
+            default:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.car_list_row, parent, false);
+                break;
+        }
 
         return new ViewHolder(itemView);
     }
@@ -59,14 +70,15 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Car car = carsList.get(position);
-        GetCarImg task = (GetCarImg) new GetCarImg().execute(car.getImgurl());
         Item manufacturer = findItem(car.getManufacturer(), manufacturersList);
         Log.d(TAG, "Car's manufacturer: \n" + manufacturer.toString());
         holder.manufacturer.setText(manufacturer.getLabel());
         holder.model.setText(car.getModel());
-        if (tmpImage != null) {
-            holder.carImg.setImageDrawable(tmpImage);
-        }
+        holder.carImg.setImageDrawable(tmpImage);
+        Picasso.with(context)
+                .load(car.getImgurl())
+                .placeholder(R.drawable.ic_if_sedan_285810)
+                .into(holder.carImg);
     }
 
     @Override
@@ -85,34 +97,5 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
             }
         }
         return null;
-    }
-
-    static  class GetCarImg extends AsyncTask<String, Void, Drawable> {
-
-        @Override
-        protected Drawable doInBackground(String... strings) {
-
-            String url = strings[0];
-            if (!url.equals("NA")) {
-                try {
-                    InputStream is = (InputStream) new URL(url).getContent();
-                    return Drawable.createFromStream(is, "src name");
-                } catch (Exception e) {
-                    Log.e(TAG, "Unable to get image content:");
-                    e.printStackTrace();
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Drawable drawable) {
-            if (isCancelled()) {
-                tmpImage = null;
-            }
-            tmpImage = drawable;
-        }
     }
 }

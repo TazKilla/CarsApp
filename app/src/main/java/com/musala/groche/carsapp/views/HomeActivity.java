@@ -16,7 +16,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -49,7 +48,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private List<Item> fuelsList = new ArrayList<>();
     private List<Item> transmissionsList = new ArrayList<>();
     private TextView tabTitleView;
-    private String currentFragName = CarsFragment.NAME;
+    private int currentFragId;
     private String previousRootTitle;
     private String itemTable;
     private CarsFragment carsFragment;
@@ -57,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private DetailFragment detailsFragment;
     private ItemsFragment itemsFragment;
     private BottomNavigationView bottomNavigationView;
-    private Button backBtn;
+    private ImageButton backBtn;
     private ImageButton moreBtn;
     private PopupMenu popupItemsMenu;
     private PopupMenu popupSettingsMenu;
@@ -76,25 +75,6 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         setListener();
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        newLocale = sharedPreferences.getString(getString(R.string.settings_selected_lang), getString(R.string.settings_opt_en));
-//        if (!newLocale.equals(locale)) {
-//
-//            switch (newLocale) {
-//                case "en":
-//                    configuration.setLocale(Locale.ENGLISH);
-//                    break;
-//                case "fr":
-//                    configuration.setLocale(Locale.FRANCE);
-//                    break;
-//            }
-//
-//            recreate();
-//        }
-//    }
-
     @Override
     public void onBackPressed() {
         tabTitleView.setText(previousRootTitle);
@@ -106,18 +86,17 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     public void carElementClicked(int carId) {
 
         Car car = databaseHelper.getCar(carId);
-        int detailsFragmentID = getFragmentID(DetailFragment.NAME);
 
         detailsFragment =
-                (DetailFragment) getSupportFragmentManager().findFragmentById(detailsFragmentID);
+                (DetailFragment) getSupportFragmentManager().findFragmentByTag(DetailFragment.TAG);
 
         if (detailsFragment == null) {
-            detailsFragment = DetailFragment.newInstance(car);
+            detailsFragment = DetailFragment.newInstance(this, car);
         } else {
             detailsFragment.setCar(car);
         }
 
-        tabTitleView.setText(R.string.title_details);
+        tabTitleView.setText(detailsFragment.getTitle());
         switchFragment(detailsFragment);
     }
 
@@ -127,18 +106,17 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         if (itemTable != null) {
             Log.d(TAG, "Asking for item id " + itemId + " on table " + itemTable);
             Item item = databaseHelper.getItemById(itemTable, itemId);
-            int detailsFragmentID = getFragmentID(DetailFragment.NAME);
 
             detailsFragment =
-                    (DetailFragment) getSupportFragmentManager().findFragmentById(detailsFragmentID);
+                    (DetailFragment) getSupportFragmentManager().findFragmentByTag(DetailFragment.TAG);
 
             if (detailsFragment == null) {
-                detailsFragment = DetailFragment.newInstance(item);
+                detailsFragment = DetailFragment.newInstance(this, item);
             } else {
                 detailsFragment.setItem(item);
             }
 
-            tabTitleView.setText(R.string.title_details);
+            tabTitleView.setText(detailsFragment.getTitle());
             switchFragment(detailsFragment);
         } else {
             Log.d(TAG, "Unable to load item details, no table have been set");
@@ -147,18 +125,18 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
 
     private void switchFragment(BaseFragment newFragment) {
 
-        // Cleaning backStack to ensure that back button will quit the app if not in Details view
+        // Cleaning backStack to ensure that back button will quit the app if in root view
         if (newFragment.isRoot()) {
             previousRootTitle = (String) tabTitleView.getText();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        currentFragName = newFragment.getName();
+        currentFragId = newFragment.getLayoutId();
         if (isFirstFrag) {
-            fragmentTransaction.add(R.id.frame_layout, newFragment);
+            fragmentTransaction.add(R.id.frame_layout, newFragment, newFragment.TAG);
             isFirstFrag = false;
         } else {
-            fragmentTransaction.replace(R.id.frame_layout, newFragment);
+            fragmentTransaction.replace(R.id.frame_layout, newFragment, newFragment.TAG);
         }
         if (!newFragment.isRoot()) {
             fragmentTransaction.addToBackStack(null);
@@ -226,13 +204,13 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
                             case R.id.navigation_cars:
                                 carsList = databaseHelper.getAllCars();
                                 tabTitleView.setText(R.string.title_cars);
-                                selectMenuItem(carsFragment, CarsFragment.NAME);
+                                selectMenuItem(carsFragment, R.layout.content_cars_frag);
                                 break;
 
                             case R.id.navigation_favorites:
                                 carsList = databaseHelper.getAllFavCars();
                                 tabTitleView.setText(R.string.title_favorites);
-                                selectMenuItem(favoritesFragment, FavoritesFragment.NAME);
+                                selectMenuItem(favoritesFragment, R.layout.content_favs_frag);
                                 break;
 
                             case R.id.navigation_items:
@@ -261,58 +239,28 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         });
 
         // Popup menu listeners
-        popupItemsMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-            @Override
-            public void onDismiss(PopupMenu menu) {
-
-            }
-        });
-
         popupItemsMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_manufacturer:
-                        itemTable = Item.MANUFACTURER_TABLE_NAME;
-                        manufacturersList = databaseHelper.getAllItems(itemTable);
-                        itemsList = manufacturersList;
-                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_manufacturers);
-                        switchFragment(itemsFragment);
+                        switchFragment(getItemsFragment(Item.MANUFACTURER_TABLE_NAME));
                         return true;
                     case R.id.menu_engine:
-                        itemTable = Item.ENGINE_TABLE_NAME;
-                        enginesList = databaseHelper.getAllItems(itemTable);
-                        itemsList = enginesList;
-                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_engines);
-                        switchFragment(itemsFragment);
+                        switchFragment(getItemsFragment(Item.ENGINE_TABLE_NAME));
                         return true;
                     case R.id.menu_fuel:
-                        itemTable = Item.FUEL_TABLE_NAME;
-                        fuelsList = databaseHelper.getAllItems(itemTable);
-                        itemsList = fuelsList;
-                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_fuels);
-                        switchFragment(itemsFragment);
+                        switchFragment(getItemsFragment(Item.FUEL_TABLE_NAME));
                         return true;
                     case R.id.menu_transmission:
-                        itemTable = Item.TRANSMISSION_TABLE_NAME;
-                        transmissionsList = databaseHelper.getAllItems(itemTable);
-                        itemsList = transmissionsList;
-                        itemsFragment = ItemsFragment.newInstance(itemsList, getFragmentID(ItemsFragment.NAME), itemTable);
                         tabTitleView.setText(R.string.title_transmissions);
-                        switchFragment(itemsFragment);
+                        switchFragment(getItemsFragment(Item.TRANSMISSION_TABLE_NAME));
                         return true;
                 }
                 return false;
-            }
-        });
-
-        popupSettingsMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-            @Override
-            public void onDismiss(PopupMenu menu) {
-
             }
         });
 
@@ -331,45 +279,31 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         // Select the default tab - Cars
         bottomNavigationView.setSelectedItemId(R.id.navigation_favorites);
         bottomNavigationView.setSelectedItemId(R.id.navigation_cars);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_favorites);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_cars);
         Log.d(TAG, "Listeners initialized...");
     }
 
-    private int getFragmentID(String fragmentName) {
-
-        return getResources().getIdentifier(
-                fragmentName,
-                "layout",
-                getPackageName()
-        );
-    }
-
-    private void selectMenuItem(BaseFragment newFragment, String fragmentName) {
-        int fragmentID = getFragmentID(fragmentName);
+    private void selectMenuItem(BaseFragment newFragment, int fragmentID) {
         backBtn.setVisibility(View.GONE);
-        if (!currentFragName.equals(fragmentName) || (detailsFragment != null && detailsFragment.isVisible())) {
+        if (currentFragId != fragmentID || (detailsFragment != null && detailsFragment.isVisible())) {
 
             if (newFragment == null) {
-                switch (fragmentName) {
-                    case FavoritesFragment.NAME:
+                switch (fragmentID) {
+                    case R.layout.content_favs_frag:
 
                         newFragment = FavoritesFragment.newInstance(
                                 carsList,
-                                fragmentID,
                                 manufacturersList
                         );
                         favoritesFragment = (FavoritesFragment) newFragment;
                         break;
-                    case CarsFragment.NAME:
+                    case R.layout.content_cars_frag:
                         newFragment = CarsFragment.newInstance(
                                 carsList,
-                                fragmentID,
                                 manufacturersList
                         );
                         carsFragment = (CarsFragment) newFragment;
                         break;
-                    case ItemsFragment.NAME:
+                    case R.layout.content_items_frag:
                         newFragment = ItemsFragment.newInstance(
                                 itemsList,
                                 fragmentID,
@@ -382,7 +316,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
                         break;
                 }
             } else {
-                if (fragmentName.equals(ItemsFragment.NAME)) {
+                if (fragmentID == R.layout.content_items_frag) {
                     ((ItemListingFragment) newFragment).setItemsList(itemsList);
                     ((ItemListingFragment) newFragment).setItemTable(itemTable);
                     itemsFragment = (ItemsFragment) newFragment;
@@ -398,14 +332,17 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         } else if (detailsFragment != null && detailsFragment.isVisible()) {
             getFragmentManager().popBackStack();
         } else {
-            Log.d(TAG,"No way to display this tab: " + currentFragName + ", " + fragmentID);
+            Log.d(TAG,"No way to display this tab: " + currentFragId + ", " + fragmentID);
         }
     }
 
     public void showSettings() {
-//        Toast.makeText(this, "You tried to open settings activity...", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
-//        finish();
+    }
+
+    private ItemsFragment getItemsFragment(String itemTable) {
+        itemsList = databaseHelper.getAllItems(itemTable);
+        return ItemsFragment.newInstance(itemsList, R.layout.content_items_frag, itemTable);
     }
 }

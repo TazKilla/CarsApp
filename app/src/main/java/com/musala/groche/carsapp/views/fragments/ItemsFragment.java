@@ -2,14 +2,14 @@ package com.musala.groche.carsapp.views.fragments;
 
 import android.util.Log;
 
+import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.model.Item;
 
 import java.util.List;
 
 public class ItemsFragment extends ItemListingFragment {
 
-    public static final String NAME = "content_items_frag";
-    public static final String TAG = "ItemsFragment";
+    public static String TAG = "ItemsFragment";
 
     private String title = "Items";
 
@@ -18,12 +18,8 @@ public class ItemsFragment extends ItemListingFragment {
     public static ItemsFragment newInstance(List<Item> settingsList, int layoutId, String tableName) {
 
         ItemsFragment fragment = new ItemsFragment();
-        fragment.fragmentLayoutId = layoutId;
         fragment.setItemTable(tableName);
-
         fragment.setItemsList(settingsList);
-
-        fragment.fragmentLayoutName = NAME;
         fragment.usesCars = false;
 
         Log.d(TAG, "New ItemsFragment instance: \n");
@@ -38,12 +34,13 @@ public class ItemsFragment extends ItemListingFragment {
         return root;
     }
 
-    public String getName() {
-        return NAME;
-    }
-
     @Override
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.content_items_frag;
     }
 }

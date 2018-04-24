@@ -441,8 +441,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Car.COLUMN_IMGURL, car.getImgurl());
         values.put(Car.COLUMN_FAVORITE, car.getFavorite());
 
-//        Log.d(TAG, values.toString());
-
         return db.update(Car.TABLE_NAME, values, Car.COLUMN_ID + " =?",
                 new String[]{String.valueOf(car.getId())});
     }

@@ -10,18 +10,15 @@ import java.util.List;
 
 public class CarsFragment extends CarListingFragment {
 
-    public static final String NAME = "content_cars_frag";
-    private static final String TAG = "CarsFragment";
-    private final String title = "Cars";
+    public static String TAG = "CarsFragment";
+    private static String title;
     private final boolean root = true;
 
-    public static CarsFragment newInstance(List<Car> carsList, int layoutId, List<Item> manufacturersList) {
+    public static CarsFragment newInstance(List<Car> carsList, List<Item> manufacturersList) {
 
         CarsFragment fragment = new CarsFragment();
-        fragment.fragmentLayoutId = layoutId;
         fragment.setCarsList(carsList);
         fragment.setManufacturersList(manufacturersList);
-        fragment.fragmentLayoutName = NAME;
         fragment.usesCars = true;
 
         Log.d(TAG, "New CarsFragment instance: \n");
@@ -33,18 +30,13 @@ public class CarsFragment extends CarListingFragment {
     }
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
     public boolean isRoot() {
         return root;
     }
 
     @Override
     public String getTitle() {
-        return title;
+        return getString(R.string.title_cars);
     }
 
     @Override

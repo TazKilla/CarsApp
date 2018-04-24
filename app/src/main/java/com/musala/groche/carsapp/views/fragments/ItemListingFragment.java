@@ -55,7 +55,7 @@ public abstract class ItemListingFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(fragmentLayoutId, container, false);
+        rootView = inflater.inflate(getLayoutId(), container, false);
 
         init();
         setListeners();
@@ -65,6 +65,7 @@ public abstract class ItemListingFragment extends BaseFragment {
 
         return rootView;
     }
+
     public void setItemsList(List<Item> itemsList) {
         this.itemsList = itemsList;
     }

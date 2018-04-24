@@ -10,18 +10,14 @@ import java.util.List;
 
 public class FavoritesFragment extends CarListingFragment {
 
-    public static final String NAME = "content_favs_frag";
-    private static final String TAG = "FavoritesFragment";
-    private final String title = "Favorites";
+    public static String TAG = "FavoritesFragment";
     private final boolean root = true;
 
-    public static FavoritesFragment newInstance(List<Car> carsList, int layoutId, List<Item> manufacturersList) {
+    public static FavoritesFragment newInstance(List<Car> carsList, List<Item> manufacturersList) {
 
         FavoritesFragment fragment = new FavoritesFragment();
-        fragment.fragmentLayoutId = layoutId;
         fragment.setCarsList(carsList);
         fragment.setManufacturersList(manufacturersList);
-        fragment.fragmentLayoutName = NAME;
         fragment.usesCars = true;
 
         Log.d(TAG, "New FavoritesFragment instance: \n");
@@ -33,18 +29,13 @@ public class FavoritesFragment extends CarListingFragment {
     }
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
     public boolean isRoot() {
         return root;
     }
 
     @Override
     public String getTitle() {
-        return title;
+        return getString(R.string.title_favorites);
     }
 
     @Override

@@ -5,7 +5,7 @@
     <string name="title_favorites">Favoris</string>
     <string name="title_items">Elements</string>
     <string name="title_settings">Paramètres</string>
-    <string name="title_details">Détails voiture</string>
+    <string name="title_car_details">Détails voiture</string>
     <string name="title_manufacturers">Constructeurs</string>
     <string name="title_engines">Motorisations</string>
     <string name="title_fuels">Carburants</string>
@@ -43,4 +43,5 @@
     <string name="hint_enter_imgurl">URL de l\'image</string>
     <string name="hint_enter_favorite">Favori</string>
     <string name="toast_fill_every_fields">Veuillez remplir tous les champs</string>
+    <string name="title_item_details">Details élément</string>
 </resources>

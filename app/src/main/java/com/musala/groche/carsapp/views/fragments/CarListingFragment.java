@@ -1,11 +1,14 @@
 package com.musala.groche.carsapp.views.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -13,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -24,7 +28,6 @@ import com.musala.groche.carsapp.database.DatabaseHelper;
 import com.musala.groche.carsapp.database.model.Car;
 import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.utils.DividerItemDecoration;
-import com.musala.groche.carsapp.utils.OnSpinnerItemSelectedListener;
 import com.musala.groche.carsapp.utils.RecyclerTouchListener;
 import com.musala.groche.carsapp.utils.RecyclerViewItemClickInterface;
 import com.musala.groche.carsapp.views.adapters.CarsAdapter;
@@ -39,23 +42,27 @@ public abstract class CarListingFragment extends BaseFragment {
     protected CarsAdapter carsAdapter;
     private TextView noCarsView;
     private View rootView;
+    private String selectedViewType;
+    private int columnNumberGridView = 2;
+    private Context context;
 
-    private RecyclerViewItemClickInterface CarClickListener;
+    private RecyclerViewItemClickInterface carClickListener;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton floatingActionButton;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        this.context = activity.getApplicationContext();
         try{
-            CarClickListener = (RecyclerViewItemClickInterface) activity;
+            carClickListener = (RecyclerViewItemClickInterface) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() +
                     " must implement ClickInterface");
         }
     }
-
-    public abstract int getLayoutId();
 
     public abstract int getCarsCount();
 
@@ -107,36 +114,33 @@ public abstract class CarListingFragment extends BaseFragment {
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
         alertDialogBuilderUserInput.setView(view);
 
-        List<String> manufacturerOptions = databaseHelper.getAllItemLabels(Item.MANUFACTURER_TABLE_NAME);
-        ArrayAdapter<String> manufacturerAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, manufacturerOptions);
-        final Spinner manufacturerSpinner = view.findViewById(R.id.manufacturer_spinner);
-        manufacturerSpinner.setAdapter(manufacturerAdapter);
-        manufacturerSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
+        AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        List<String> engineOptions = databaseHelper.getAllItemLabels(Item.ENGINE_TABLE_NAME);
-        ArrayAdapter<String> engineAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, engineOptions);
-        final Spinner engineSpinner = view.findViewById(R.id.engine_spinner);
-        engineSpinner.setAdapter(engineAdapter);
-        engineSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
+            }
 
-        List<String> fuelOptions = databaseHelper.getAllItemLabels(Item.FUEL_TABLE_NAME);
-        ArrayAdapter<String> fuelAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, fuelOptions);
-        final Spinner fuelSpinner = view.findViewById(R.id.fuel_spinner);
-        fuelSpinner.setAdapter(fuelAdapter);
-        fuelSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        List<String> transmissionOptions = databaseHelper.getAllItemLabels(Item.TRANSMISSION_TABLE_NAME);
-        ArrayAdapter<String> transmissionAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, transmissionOptions);
-        final Spinner transmissionSpinner = view.findViewById(R.id.transmission_spinner);
-        transmissionSpinner.setAdapter(transmissionAdapter);
-        transmissionSpinner.setOnItemSelectedListener(new OnSpinnerItemSelectedListener());
+            }
+        };
 
-//        final EditText inputManufacturer = view.findViewById(R.id.manufacturer);
+        ArrayAdapter<String> manufacturerAdapter = setAdapter(this.getActivity(), Item.MANUFACTURER_TABLE_NAME);
+        final Spinner manufacturerSpinner = setSpinner(view, manufacturerAdapter, R.id.manufacturer_spinner, itemSelectedListener);
+
+        ArrayAdapter<String> engineAdapter = setAdapter(this.getActivity(), Item.ENGINE_TABLE_NAME);
+        final Spinner engineSpinner = setSpinner(view, engineAdapter, R.id.engine_spinner, itemSelectedListener);
+
+        ArrayAdapter<String> fuelAdapter = setAdapter(this.getActivity(), Item.FUEL_TABLE_NAME);
+        final Spinner fuelSpinner = setSpinner(view, fuelAdapter, R.id.fuel_spinner, itemSelectedListener);
+
+        ArrayAdapter<String> transmissionAdapter =setAdapter(this.getActivity(), Item.TRANSMISSION_TABLE_NAME);
+        final Spinner transmissionSpinner = setSpinner(view, transmissionAdapter, R.id.transmission_spinner, itemSelectedListener);
+
         final EditText inputModel = view.findViewById(R.id.model);
         final EditText inputYear = view.findViewById(R.id.year);
         final EditText inputPrice = view.findViewById(R.id.price);
-//        final EditText inputEngine = view.findViewById(R.id.engine);
-//        final EditText inputTransmission = view.findViewById(R.id.transmission);
         final EditText inputDescription = view.findViewById(R.id.description);
         final EditText inputImgUrl = view.findViewById(R.id.imgurl);
         final EditText inputFavorite = view.findViewById(R.id.favorite);
@@ -151,7 +155,6 @@ public abstract class CarListingFragment extends BaseFragment {
             Item fuel = databaseHelper.getItemById(Item.FUEL_TABLE_NAME, car.getFuel());
             Item transmission = databaseHelper.getItemById(Item.TRANSMISSION_TABLE_NAME, car.getTransmission());
 
-//            inputManufacturer.setText(car.getManufacturer());
             manufacturerSpinner.setSelection(manufacturerAdapter.getPosition(manufacturer.getLabel()));
             inputModel.setText(car.getModel());
             inputYear.setText(String.valueOf(car.getYear()));
@@ -159,8 +162,6 @@ public abstract class CarListingFragment extends BaseFragment {
             engineSpinner.setSelection(engineAdapter.getPosition(engine.getLabel()));
             fuelSpinner.setSelection(fuelAdapter.getPosition(fuel.getLabel()));
             transmissionSpinner.setSelection(transmissionAdapter.getPosition(transmission.getLabel()));
-//            inputEngine.setText(String.valueOf(car.getEngine()));
-//            inputTransmission.setText(String.valueOf(car.getTransmission()));
             inputDescription.setText(car.getDescription());
             inputImgUrl.setText(car.getImgurl());
             inputFavorite.setText(String.valueOf(car.getFavorite()));
@@ -187,16 +188,20 @@ public abstract class CarListingFragment extends BaseFragment {
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (/*TextUtils.isEmpty(inputManufacturer.getText().toString()) ||*/
+                if (
                         TextUtils.isEmpty(inputModel.getText().toString()) ||
                         TextUtils.isEmpty(inputYear.getText().toString()) ||
                         TextUtils.isEmpty(inputPrice.getText().toString()) ||
-//                        TextUtils.isEmpty(inputEngine.getText().toString()) ||
-//                        TextUtils.isEmpty(inputTransmission.getText().toString()) ||
                         TextUtils.isEmpty(inputDescription.getText().toString()) ||
                         TextUtils.isEmpty(inputImgUrl.getText().toString()) ||
                         TextUtils.isEmpty(inputFavorite.getText().toString())) {
-                    Toast.makeText(getActivity(), R.string.toast_fill_every_fields, Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(
+                            getActivity(),
+                            R.string.toast_fill_every_fields,
+                            Toast.LENGTH_SHORT
+                    ).show();
+
                     return;
                 } else {
                     alertDialog.dismiss();
@@ -244,17 +249,7 @@ public abstract class CarListingFragment extends BaseFragment {
 
     public void toggleEmptyCars() {
         if (databaseHelper != null) {
-            int count = 0;
-//            if (fragmentLayoutName.equals(CarsFragment.NAME)) {
-//                Log.d(TAG, "Getting cars count form db...");
-//                count = databaseHelper.getCarsCount();
-//                Log.d(TAG, "There is " + count + " cars in total");
-//            } else if (fragmentLayoutName.equals(FavoritesFragment.NAME)) {
-//                Log.d(TAG, "Getting favs cars count form db...");
-//                count = databaseHelper.getFavCarsCount();
-//                Log.d(TAG, "There is " + count + " fav cars");
-//            }
-            count = getCarsCount();
+            int count = getCarsCount();
             if (count > 0) {
                 noCarsView.setVisibility(View.INVISIBLE);
             } else {
@@ -267,23 +262,47 @@ public abstract class CarListingFragment extends BaseFragment {
 
     private void init() {
 
-        floatingActionButton = rootView.findViewById(R.id.floating_action_button);
-
-        mLayoutManager = new LinearLayoutManager(this.getActivity());
-
-        noCarsView = rootView.findViewById(R.id.empty_car_view);
-        carsRecyclerView = rootView.findViewById(R.id.recycler_view);
-        carsRecyclerView.setLayoutManager(mLayoutManager);
-        carsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        carsRecyclerView.addItemDecoration(
-                new DividerItemDecoration(
-                        this.getActivity(),
-                        LinearLayoutManager.VERTICAL,
-                        R.dimen.activity_margin
-                )
+        sharedPreferences = getActivity().getSharedPreferences(
+                getString(R.string.preferences_file_key),
+                Context.MODE_PRIVATE
+        );
+        selectedViewType = sharedPreferences.getString(
+                getString(R.string.settings_selected_view),
+                getString(R.string.settings_opt_list)
         );
 
-        carsAdapter = new CarsAdapter(this.carsList, this.manufacturersList);
+        floatingActionButton = rootView.findViewById(R.id.floating_action_button);
+        noCarsView = rootView.findViewById(R.id.empty_car_view);
+        carsRecyclerView = rootView.findViewById(R.id.recycler_view);
+
+        switch (selectedViewType) {
+            case "grid":
+                mLayoutManager = new GridLayoutManager(this.getActivity(), columnNumberGridView);
+                break;
+            default:
+                mLayoutManager = new LinearLayoutManager(this.getActivity());
+                break;
+        }
+
+        switch (selectedViewType) {
+            case "grid":
+                carsRecyclerView.setHasFixedSize(true);
+                break;
+            default:
+                carsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                carsRecyclerView.addItemDecoration(
+                        new DividerItemDecoration(
+                                this.getActivity(),
+                                LinearLayoutManager.VERTICAL,
+                                R.dimen.activity_margin
+                        )
+                );
+                break;
+        }
+
+        carsRecyclerView.setLayoutManager(mLayoutManager);
+
+        carsAdapter = new CarsAdapter(getActivity(), this.carsList, this.manufacturersList, selectedViewType);
         carsRecyclerView.setAdapter(carsAdapter);
     }
 
@@ -296,7 +315,7 @@ public abstract class CarListingFragment extends BaseFragment {
 
                 Car car = carsList.get(position);
 
-                CarClickListener.carElementClicked(car.getId());
+                carClickListener.carElementClicked(car.getId());
             }
 
             @Override
@@ -354,5 +373,19 @@ public abstract class CarListingFragment extends BaseFragment {
         carsList.remove(position);
         carsAdapter.notifyItemRemoved(position);
         toggleEmptyCars();
+    }
+
+    private Spinner setSpinner(View view, ArrayAdapter itemAdapter, int spinnerId,
+                               AdapterView.OnItemSelectedListener itemSelectedListener) {
+        final Spinner itemSpinner = view.findViewById(spinnerId);
+        itemSpinner.setAdapter(itemAdapter);
+        itemSpinner.setOnItemSelectedListener(itemSelectedListener);
+
+        return itemSpinner;
+    }
+
+    private ArrayAdapter<String> setAdapter(Context context, String tableName) {
+        List<String> itemOptions = databaseHelper.getAllItemLabels(tableName);
+        return new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, itemOptions);
     }
 }

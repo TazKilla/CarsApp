@@ -10,9 +10,9 @@
     <TextView android:id="@+id/dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_10"
+        android:layout_marginBottom="@dimen/margin"
         android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="8sp"
+        android:lineSpacingExtra="@dimen/text_line_spacing"
         android:text="@string/lbl_new_car_title"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/lbl_new_car_title"
@@ -20,105 +20,59 @@
 
     <Spinner
         android:id="@+id/manufacturer_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:textSize="@dimen/input_new_car">
+        style="@style/spinner_view">
     </Spinner>
 
     <EditText
         android:id="@+id/model"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
         android:hint="@string/hint_enter_model"
         android:inputType="textCapSentences|text"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        style="@style/edit_text_new_car"/>
 
     <EditText
         android:id="@+id/year"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
         android:hint="@string/hint_enter_year"
         android:inputType="number"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        style="@style/edit_text_new_car"/>
 
     <EditText
         android:id="@+id/price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
         android:hint="@string/hint_enter_price"
         android:inputType="numberDecimal"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        style="@style/edit_text_new_car"/>
 
     <Spinner
         android:id="@+id/engine_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:textSize="@dimen/input_new_car">
+        style="@style/spinner_view">
     </Spinner>
 
     <Spinner
         android:id="@+id/fuel_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:textSize="@dimen/input_new_car">
+        style="@style/spinner_view">
     </Spinner>
 
     <Spinner
         android:id="@+id/transmission_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:textSize="@dimen/input_new_car">
+        style="@style/spinner_view">
     </Spinner>
 
     <EditText
         android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
         android:hint="@string/hint_enter_description"
         android:inputType="textCapSentences|textMultiLine"
         android:lines="2"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        style="@style/edit_text_new_car" />
 
     <EditText
         android:id="@+id/imgurl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
         android:hint="@string/hint_enter_imgurl"
         android:inputType="textCapSentences|text"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        style="@style/edit_text_new_car"/>
 
     <EditText
         android:id="@+id/favorite"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
         android:hint="@string/hint_enter_favorite"
         android:inputType="number"
-        android:textColorHint="@color/hint_enter_car"
-        android:textSize="@dimen/input_new_car" />
+        style="@style/edit_text_new_car" />
 
 </LinearLayout>

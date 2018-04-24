@@ -4,23 +4,24 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground"
-    android:paddingBottom="@dimen/dimen_10"
+    android:paddingBottom="@dimen/margin"
     android:paddingLeft="@dimen/activity_margin"
     android:paddingRight="@dimen/activity_margin"
-    android:paddingTop="@dimen/dimen_10">
+    android:paddingTop="@dimen/margin">
 
     <ImageView
         android:id="@+id/car_img"
         android:layout_width="@dimen/img_size"
         android:layout_height="@dimen/img_size"
-        android:layout_marginEnd="@dimen/dimen_10"/>
+        android:layout_marginEnd="@dimen/margin"
+        />
 
     <TextView
         android:id="@+id/manufacturer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/car_img"
+        android:layout_marginTop="@dimen/margin"
         android:textColor="@color/car_list_text"
         android:textSize="@dimen/car_list_text"
         />
