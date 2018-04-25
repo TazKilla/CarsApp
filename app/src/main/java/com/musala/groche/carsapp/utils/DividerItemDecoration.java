@@ -11,22 +11,21 @@ import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
 
+// TODO remove this warning
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private static final int[] ATTRS = new int[]{
             android.R.attr.listDivider
     };
 
-    public static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
-    public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
+    private static final int HORIZONTAL_LIST = LinearLayoutManager.HORIZONTAL;
+    private static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
 
     private Drawable mDivider;
     private int mOrientation;
-    private Context context;
     private int margin;
 
     public DividerItemDecoration(Context context, int orientation, int margin) {
-        this.context = context;
         this.margin = margin;
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
@@ -50,7 +49,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    public void drawVertical(Canvas c, RecyclerView parent) {
+    private void drawVertical(Canvas c, RecyclerView parent) {
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
 
@@ -60,12 +59,16 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left + dpToPx(margin), top, right + dpToPx(margin), bottom);
+            mDivider.setBounds(
+                    left + dpToPx(parent.getContext(), margin),
+                    top,
+                    right + dpToPx(parent.getContext(), margin),
+                    bottom);
             mDivider.draw(c);
         }
     }
 
-    public void drawHorizontal(Canvas c, RecyclerView parent) {
+    private void drawHorizontal(Canvas c, RecyclerView parent) {
         final int top = parent.getPaddingTop();
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
 
@@ -75,7 +78,12 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
             final int left = child.getRight() + params.rightMargin;
             final int right = left + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top + dpToPx(margin), right, bottom + dpToPx(margin));
+            mDivider.setBounds(
+                    left,
+                    top + dpToPx(parent.getContext(), margin),
+                    right,
+                    bottom + dpToPx(parent.getContext(), margin)
+            );
             mDivider.draw(c);
         }
     }
@@ -89,7 +97,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    private int dpToPx(int dp) {
+    private int dpToPx(Context context, int dp) {
         Resources r = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }

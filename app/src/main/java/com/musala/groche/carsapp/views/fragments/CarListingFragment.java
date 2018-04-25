@@ -1,10 +1,10 @@
 package com.musala.groche.carsapp.views.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -42,24 +42,18 @@ public abstract class CarListingFragment extends BaseFragment {
     protected CarsAdapter carsAdapter;
     private TextView noCarsView;
     private View rootView;
-    private String selectedViewType;
-    private int columnNumberGridView = 2;
-    private Context context;
 
     private RecyclerViewItemClickInterface carClickListener;
-    private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton floatingActionButton;
 
-    private SharedPreferences sharedPreferences;
-
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.context = activity.getApplicationContext();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
         try{
-            carClickListener = (RecyclerViewItemClickInterface) activity;
+            carClickListener = (RecyclerViewItemClickInterface) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() +
+            throw new ClassCastException(context.toString() +
                     " must implement ClickInterface");
         }
     }
@@ -67,7 +61,7 @@ public abstract class CarListingFragment extends BaseFragment {
     public abstract int getCarsCount();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(getLayoutId(), container, false);
 
@@ -91,7 +85,11 @@ public abstract class CarListingFragment extends BaseFragment {
     public void showActionsDialog(final int position) {
         CharSequence options[] = new CharSequence[]{"Edit", "Delete"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+        if (getContext() == null) {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle(R.string.title_dialog);
 
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -108,10 +106,15 @@ public abstract class CarListingFragment extends BaseFragment {
     }
 
     protected void showCarDialog(final boolean shouldUpdate, final Car car, final int position) {
+        final ViewGroup nullParent = null;
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this.getActivity());
-        View view = layoutInflaterAndroid.inflate(R.layout.car_dialog, null);
+        View view = layoutInflaterAndroid.inflate(R.layout.car_dialog, nullParent);
 
-        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
+        if (getContext() == null) {
+            return;
+        }
+
+        AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getContext());
         alertDialogBuilderUserInput.setView(view);
 
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -262,11 +265,18 @@ public abstract class CarListingFragment extends BaseFragment {
 
     private void init() {
 
-        sharedPreferences = getActivity().getSharedPreferences(
+        int columnNumberGridView = 2;
+        RecyclerView.LayoutManager mLayoutManager;
+
+        if (getContext() == null) {
+            return;
+        }
+
+        SharedPreferences sharedPreferences =getContext().getSharedPreferences(
                 getString(R.string.preferences_file_key),
                 Context.MODE_PRIVATE
         );
-        selectedViewType = sharedPreferences.getString(
+        String selectedViewType = sharedPreferences.getString(
                 getString(R.string.settings_selected_view),
                 getString(R.string.settings_opt_list)
         );
@@ -292,7 +302,7 @@ public abstract class CarListingFragment extends BaseFragment {
                 carsRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 carsRecyclerView.addItemDecoration(
                         new DividerItemDecoration(
-                                this.getActivity(),
+                                this.getContext(),
                                 LinearLayoutManager.VERTICAL,
                                 R.dimen.activity_margin
                         )
@@ -336,12 +346,16 @@ public abstract class CarListingFragment extends BaseFragment {
 
     private void initDB() {
 
-        databaseHelper = DatabaseHelper.getInstance(this.getActivity());
+        if (getActivity() == null) {
+            return;
+        }
+
+        databaseHelper = DatabaseHelper.getInstance(this.getActivity(), this.getActivity().getAssets());
     }
 
     public void updateCar(Car c, int position) {
 
-        Log.d(TAG, "Car to be updated: " + c.toString());
+//        Log.d(TAG, "Car to be updated: " + c.toString());
         int result = databaseHelper.updateCar(c);
         Log.d(TAG, result == 1 ? "Car updated on database" : "Unable to update car on database: " + result);
 

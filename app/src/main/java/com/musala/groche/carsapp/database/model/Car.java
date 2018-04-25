@@ -17,42 +17,6 @@ public class Car implements Serializable {
     public static final String COLUMN_IMGURL = "imgurl";
     public static final String COLUMN_FAVORITE = "favorite";
 
-    public enum EngineType {
-        GASOLINE("Gasoline", 0),
-        DIESEL("Diesel", 1);
-
-        private String stringValue;
-        private int intValue;
-
-        EngineType(String toString, int value) {
-            stringValue = toString;
-            intValue = value;
-        }
-
-        @Override
-        public String toString() {
-            return stringValue + "(" + intValue + ")";
-        }
-    }
-
-    public enum TransmissionType {
-        MANUAL("Manual", 0),
-        AUTOMATIC("Automatic", 1);
-
-        private String stringValue;
-        private int intValue;
-
-        TransmissionType(String toString, int value) {
-            stringValue = toString;
-            intValue = value;
-        }
-
-        @Override
-        public String toString() {
-            return stringValue + "(" + intValue + ")";
-        }
-    }
-
     private int id;
     private int manufacturer;
     private String model;

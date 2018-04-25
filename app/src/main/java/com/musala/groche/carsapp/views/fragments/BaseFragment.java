@@ -12,10 +12,10 @@ public abstract class BaseFragment extends Fragment {
     protected List<Car> carsList;
     protected List<Item> itemsList;
     protected List<Item> manufacturersList;
-    protected DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getActivity());
+    protected static DatabaseHelper databaseHelper;
     protected boolean usesCars;
     protected String title;
-    public static String TAG;
+    public String TAG;
 
     public abstract String getTitle();
 

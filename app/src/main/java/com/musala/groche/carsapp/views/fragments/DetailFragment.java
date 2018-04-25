@@ -2,24 +2,25 @@ package com.musala.groche.carsapp.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.DatabaseHelper;
 import com.musala.groche.carsapp.database.model.Item;
 import com.musala.groche.carsapp.database.model.Car;
+import com.squareup.picasso.Picasso;
 
 public class DetailFragment extends BaseFragment {
 
     public static String TAG = "DetailFragment";
     public static String title;
-    private final boolean root = false;
-    private Context context;
 
     private Car car;
     private Item item;
@@ -32,7 +33,7 @@ public class DetailFragment extends BaseFragment {
 
         DetailFragment fragment = new DetailFragment();
         fragment.car = car;
-        fragment.context = context;
+        initDB(context);
 
         Log.d(TAG, "New DetailFragment instance: \n" + car.toString());
 
@@ -43,7 +44,7 @@ public class DetailFragment extends BaseFragment {
 
         DetailFragment fragment = new DetailFragment();
         fragment.item = item;
-        fragment.context = context;
+        initDB(context);
 
         Log.d(TAG, "New DetailFragment instance: \n" + item.toString());
 
@@ -51,13 +52,12 @@ public class DetailFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.content_dtls_frag, container, false);
 
         init();
         setListeners();
-        initDB();
 
         return rootView;
     }
@@ -79,15 +79,18 @@ public class DetailFragment extends BaseFragment {
 
     @Override
     public boolean isRoot() {
-        return root;
+        return false;
     }
 
     @Override
     public String getTitle() {
+        if (getContext() == null) {
+            return "";
+        }
         if (car != null) {
-            return context.getString(R.string.title_car_details);
+            return getContext().getString(R.string.title_car_details);
         } else if (item != null) {
-            return context.getString(R.string.title_item_details);
+            return getContext().getString(R.string.title_item_details);
         } else {
             return "";
         }
@@ -96,6 +99,9 @@ public class DetailFragment extends BaseFragment {
     private void init() {
 
         TextView textView;
+        ImageView imageView;
+        String price;
+
         favTextView = rootView.findViewById(R.id.detail_favorite);
         favBtn = rootView.findViewById(R.id.favbtn);
         fab = rootView.findViewById(R.id.details_fab);
@@ -117,7 +123,8 @@ public class DetailFragment extends BaseFragment {
             textView = rootView.findViewById(R.id.detail_year);
             textView.setText(String.valueOf(this.car.getYear()));
             textView = rootView.findViewById(R.id.detail_price);
-            textView.setText(String.valueOf(this.car.getPrice()));
+            price = String.valueOf(this.car.getPrice()) + " US$";
+            textView.setText(price);
             textView = rootView.findViewById(R.id.detail_engine);
             textView.setText(databaseHelper.getItemById(
                     Item.ENGINE_TABLE_NAME,
@@ -135,8 +142,11 @@ public class DetailFragment extends BaseFragment {
             );
             textView = rootView.findViewById(R.id.detail_description);
             textView.setText(this.car.getDescription());
-            textView = rootView.findViewById(R.id.detail_imgurl);
-            textView.setText(this.car.getImgurl());
+            imageView = rootView.findViewById(R.id.detail_img);
+            Picasso.with(getContext())
+                    .load(car.getImgurl())
+                    .placeholder(R.drawable.ic_if_sedan_285810)
+                    .into(imageView);
             switch (this.car.getFavorite()) {
                 case 0:
                     favTextView.setText("");
@@ -167,8 +177,11 @@ public class DetailFragment extends BaseFragment {
             textView.setText(this.item.getLabel());
             textView = rootView.findViewById(R.id.detail_description);
             textView.setText(this.item.getDescription());
-            textView = rootView.findViewById(R.id.detail_imgurl);
-            textView.setText(this.item.getImgurl());
+            imageView = rootView.findViewById(R.id.detail_img);
+            Picasso.with(getContext())
+                    .load(this.item.getImgurl())
+                    .placeholder(R.drawable.ic_if_list_103613)
+                    .into(imageView);
         }
     }
 
@@ -194,9 +207,9 @@ public class DetailFragment extends BaseFragment {
         }
     }
 
-    private void initDB() {
+    private static void initDB(Context context) {
 
-        databaseHelper = DatabaseHelper.getInstance(this.getActivity());
+        databaseHelper = DatabaseHelper.getInstance(context, context.getAssets());
     }
 
     @Override

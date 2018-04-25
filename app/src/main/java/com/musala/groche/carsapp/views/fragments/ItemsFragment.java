@@ -11,11 +11,7 @@ public class ItemsFragment extends ItemListingFragment {
 
     public static String TAG = "ItemsFragment";
 
-    private String title = "Items";
-
-    private boolean root = true;
-
-    public static ItemsFragment newInstance(List<Item> settingsList, int layoutId, String tableName) {
+    public static ItemsFragment newInstance(List<Item> settingsList, String tableName) {
 
         ItemsFragment fragment = new ItemsFragment();
         fragment.setItemTable(tableName);
@@ -23,20 +19,20 @@ public class ItemsFragment extends ItemListingFragment {
         fragment.usesCars = false;
 
         Log.d(TAG, "New ItemsFragment instance: \n");
-        for (Item item : fragment.itemsList) {
-            Log.d(TAG, item.toString() + "\n");
-        }
+//        for (Item item : fragment.itemsList) {
+//            Log.d(TAG, item.toString() + "\n");
+//        }
 
         return fragment;
     }
 
     public boolean isRoot() {
-        return root;
+        return true;
     }
 
     @Override
     public String getTitle() {
-        return title;
+        return getString(R.string.title_items);
     }
 
     @Override

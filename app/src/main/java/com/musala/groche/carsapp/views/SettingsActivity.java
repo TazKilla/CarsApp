@@ -16,7 +16,6 @@ import com.musala.groche.carsapp.R;
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = "SettingsActivity";
-    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private CheckBox listCheckBox;
     private CheckBox gridCheckBox;
@@ -37,6 +36,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+
+        SharedPreferences sharedPreferences;
 
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTheme(R.style.AppTheme);
@@ -105,7 +106,6 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.d(TAG, "Switching from french to english");
                 updateSetting(
                         englishCheckBox,
-                        true,
                         getString(R.string.settings_selected_lang),
                         getString(R.string.settings_opt_en));
                 frenchCheckBox.setChecked(false);
@@ -115,7 +115,6 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.d(TAG, "Switching from english to french");
                 updateSetting(
                         frenchCheckBox,
-                        true,
                         getString(R.string.settings_selected_lang),
                         getString(R.string.settings_opt_fr)
                 );
@@ -140,7 +139,6 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.d(TAG, "Switching from grid to list view");
                 updateSetting(
                         listCheckBox,
-                        true,
                         getString(R.string.settings_selected_view),
                         getString(R.string.settings_opt_list)
                 );
@@ -151,7 +149,6 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.d(TAG, "Switching from list to grid view");
                 updateSetting(
                         gridCheckBox,
-                        true,
                         getString(R.string.settings_selected_view),
                         getString(R.string.settings_opt_grid));
                 listCheckBox.setChecked(false);
@@ -167,9 +164,8 @@ public class SettingsActivity extends AppCompatActivity {
     };
 
     // Updates any kind of setting in the shared preferences
-    private void updateSetting(CheckBox checkBox, boolean checkBoxStatus,
-                               String settingName, String settingValue) {
-        checkBox.setChecked(checkBoxStatus);
+    private void updateSetting(CheckBox checkBox, String settingName, String settingValue) {
+        checkBox.setChecked(true);
         editor.putString(settingName, settingValue);
     }
 

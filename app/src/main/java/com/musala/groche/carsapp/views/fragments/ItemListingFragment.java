@@ -1,8 +1,9 @@
 package com.musala.groche.carsapp.views.fragments;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,22 +39,22 @@ public abstract class ItemListingFragment extends BaseFragment {
     private String itemTable = null;
 
     private RecyclerViewItemClickInterface itemClickListener;
-    private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton floatingActionButton;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
         try{
-            itemClickListener = (RecyclerViewItemClickInterface) activity;
+            itemClickListener = (RecyclerViewItemClickInterface) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() +
+            throw new ClassCastException(context.toString() +
                     " must implement ClickInterface");
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         rootView = inflater.inflate(getLayoutId(), container, false);
 
@@ -75,6 +76,11 @@ public abstract class ItemListingFragment extends BaseFragment {
     }
 
     public void showActionsDialog(final int position) {
+
+        if (getActivity() == null) {
+            return;
+        }
+
         CharSequence options[] = new CharSequence[]{"Edit", "Delete"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
@@ -94,8 +100,14 @@ public abstract class ItemListingFragment extends BaseFragment {
     }
 
     protected void showItemDialog(final boolean shouldUpdate, final Item item, final int position) {
+
+        if (getActivity() == null) {
+            return;
+        }
+
+        final ViewGroup nullParent = null;
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this.getActivity());
-        View view = layoutInflaterAndroid.inflate(R.layout.item_dialog, null);
+        View view = layoutInflaterAndroid.inflate(R.layout.item_dialog, nullParent);
 
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this.getActivity());
         alertDialogBuilderUserInput.setView(view);
@@ -193,6 +205,11 @@ public abstract class ItemListingFragment extends BaseFragment {
 
     private void init() {
 
+        if (getActivity() == null) {
+            return;
+        }
+
+        RecyclerView.LayoutManager mLayoutManager;
         floatingActionButton = rootView.findViewById(R.id.floating_action_button);
 
         mLayoutManager = new LinearLayoutManager(this.getActivity());
@@ -243,12 +260,15 @@ public abstract class ItemListingFragment extends BaseFragment {
 
     private void initDB() {
 
-        databaseHelper = DatabaseHelper.getInstance(this.getActivity());
+        if (getActivity() == null) {
+            return;
+        }
+        databaseHelper = DatabaseHelper.getInstance(this.getActivity(), this.getActivity().getAssets());
     }
 
     public void updateItem(Item item, int position) {
 
-        Log.d(TAG, "Car to be updated: " + item.toString());
+//        Log.d(TAG, "Car to be updated: " + item.toString());
         int result = databaseHelper.updateItem(item, itemTable);
         Log.d(TAG, result == 1 ? "Item updated on database" : "Unable to update item on database: " + result);
 

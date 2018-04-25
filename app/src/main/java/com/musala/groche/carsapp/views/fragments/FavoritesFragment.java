@@ -1,7 +1,5 @@
 package com.musala.groche.carsapp.views.fragments;
 
-import android.util.Log;
-
 import com.musala.groche.carsapp.R;
 import com.musala.groche.carsapp.database.model.Car;
 import com.musala.groche.carsapp.database.model.Item;
@@ -11,7 +9,6 @@ import java.util.List;
 public class FavoritesFragment extends CarListingFragment {
 
     public static String TAG = "FavoritesFragment";
-    private final boolean root = true;
 
     public static FavoritesFragment newInstance(List<Car> carsList, List<Item> manufacturersList) {
 
@@ -20,17 +17,12 @@ public class FavoritesFragment extends CarListingFragment {
         fragment.setManufacturersList(manufacturersList);
         fragment.usesCars = true;
 
-        Log.d(TAG, "New FavoritesFragment instance: \n");
-        for (Car car : fragment.carsList) {
-            Log.d(TAG, car.toString() + "\n");
-        }
-
         return fragment;
     }
 
     @Override
     public boolean isRoot() {
-        return root;
+        return true;
     }
 
     @Override

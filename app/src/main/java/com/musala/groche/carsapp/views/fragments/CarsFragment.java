@@ -11,8 +11,6 @@ import java.util.List;
 public class CarsFragment extends CarListingFragment {
 
     public static String TAG = "CarsFragment";
-    private static String title;
-    private final boolean root = true;
 
     public static CarsFragment newInstance(List<Car> carsList, List<Item> manufacturersList) {
 
@@ -22,16 +20,16 @@ public class CarsFragment extends CarListingFragment {
         fragment.usesCars = true;
 
         Log.d(TAG, "New CarsFragment instance: \n");
-        for (Car car : fragment.carsList) {
-            Log.d(TAG, car.toString() + "\n");
-        }
+//        for (Car car : fragment.carsList) {
+//            Log.d(TAG, car.toString() + "\n");
+//        }
 
         return fragment;
     }
 
     @Override
     public boolean isRoot() {
-        return root;
+        return true;
     }
 
     @Override

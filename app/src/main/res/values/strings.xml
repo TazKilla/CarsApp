@@ -46,6 +46,8 @@
     <string name="lbl_edit_transmission_title">Edit Transmission</string>
     <string name="lbl_favorite">Favorite</string>
 
+    <string name="description_element_img">Car picture</string>
+
     <string name="hint_enter_manuf">Manufacturer</string>
     <string name="hint_enter_model">Model</string>
     <string name="hint_enter_label">Label</string>

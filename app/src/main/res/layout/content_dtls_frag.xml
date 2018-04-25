@@ -83,13 +83,13 @@
                 android:layout_marginTop="@dimen/detail_margin_top"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <TextView
-                android:id="@+id/detail_imgurl"
+            <ImageView
+                android:id="@+id/detail_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/details_img_size"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:layout_marginTop="@dimen/detail_margin_top"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:contentDescription="@string/description_element_img"/>
 
             <TextView
                 android:id="@+id/detail_favorite"

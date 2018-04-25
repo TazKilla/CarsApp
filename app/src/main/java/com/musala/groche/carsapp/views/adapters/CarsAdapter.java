@@ -1,9 +1,9 @@
 package com.musala.groche.carsapp.views.adapters;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+//import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +19,10 @@ import java.util.List;
 
 public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
 
-    private static final String TAG = "CarsAdapter";
+//    private static final String TAG = "CarsAdapter";
 
     private List<Car> carsList;
     private List<Item> manufacturersList;
-    static Drawable tmpImage;
     private String selectedViewType;
     private Context context;
 
@@ -31,7 +30,7 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
 
         public TextView manufacturer;
         public TextView model;
-        public ImageView carImg;
+        ImageView carImg;
 
         ViewHolder(View view) {
             super(view);
@@ -49,7 +48,8 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View itemView;
 
@@ -68,13 +68,14 @@ public class CarsAdapter extends RecyclerView.Adapter<CarsAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Car car = carsList.get(position);
         Item manufacturer = findItem(car.getManufacturer(), manufacturersList);
-        Log.d(TAG, "Car's manufacturer: \n" + manufacturer.toString());
-        holder.manufacturer.setText(manufacturer.getLabel());
+        if (manufacturer != null) {
+//            Log.d(TAG, "Car's manufacturer: \n" + manufacturer.toString());
+            holder.manufacturer.setText(manufacturer.getLabel());
+        }
         holder.model.setText(car.getModel());
-        holder.carImg.setImageDrawable(tmpImage);
         Picasso.with(context)
                 .load(car.getImgurl())
                 .placeholder(R.drawable.ic_if_sedan_285810)
