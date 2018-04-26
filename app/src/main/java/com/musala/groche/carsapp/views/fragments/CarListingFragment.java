@@ -11,6 +11,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -146,7 +147,7 @@ public abstract class CarListingFragment extends BaseFragment {
         final EditText inputPrice = view.findViewById(R.id.price);
         final EditText inputDescription = view.findViewById(R.id.description);
         final EditText inputImgUrl = view.findViewById(R.id.imgurl);
-        final EditText inputFavorite = view.findViewById(R.id.favorite);
+        final SwitchCompat favoriteSwitch = view.findViewById(R.id.favorite);
 
         TextView dialogTitle = view.findViewById(R.id.dialog_title);
         dialogTitle.setText(!shouldUpdate ? getString(R.string.lbl_new_car_title) : getString(R.string.lbl_edit_car_title));
@@ -167,7 +168,11 @@ public abstract class CarListingFragment extends BaseFragment {
             transmissionSpinner.setSelection(transmissionAdapter.getPosition(transmission.getLabel()));
             inputDescription.setText(car.getDescription());
             inputImgUrl.setText(car.getImgurl());
-            inputFavorite.setText(String.valueOf(car.getFavorite()));
+            if (car.getFavorite() == 1) {
+                favoriteSwitch.setChecked(true);
+            } else {
+                favoriteSwitch.setChecked(false);
+            }
         }
         alertDialogBuilderUserInput
                 .setCancelable(false)
@@ -191,13 +196,11 @@ public abstract class CarListingFragment extends BaseFragment {
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (
-                        TextUtils.isEmpty(inputModel.getText().toString()) ||
+                if (TextUtils.isEmpty(inputModel.getText().toString()) ||
                         TextUtils.isEmpty(inputYear.getText().toString()) ||
                         TextUtils.isEmpty(inputPrice.getText().toString()) ||
                         TextUtils.isEmpty(inputDescription.getText().toString()) ||
-                        TextUtils.isEmpty(inputImgUrl.getText().toString()) ||
-                        TextUtils.isEmpty(inputFavorite.getText().toString())) {
+                        TextUtils.isEmpty(inputImgUrl.getText().toString())) {
 
                     Toast.makeText(
                             getActivity(),
@@ -238,7 +241,11 @@ public abstract class CarListingFragment extends BaseFragment {
                 mCar.setTransmission(mTransmission.getId());
                 mCar.setDescription(inputDescription.getText().toString());
                 mCar.setImgurl(inputImgUrl.getText().toString());
-                mCar.setFavorite(Integer.valueOf(inputFavorite.getText().toString()));
+                if (favoriteSwitch.isChecked()) {
+                    mCar.setFavorite(1);
+                } else {
+                    mCar.setFavorite(0);
+                }
 
                 if (shouldUpdate && car != null) {
                     mCar.setId(car.getId());

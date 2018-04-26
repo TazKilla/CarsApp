@@ -3,11 +3,12 @@ package com.musala.groche.carsapp.views.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +25,8 @@ public class DetailFragment extends BaseFragment {
 
     private Car car;
     private Item item;
-    private TextView favBtn;
-    private FloatingActionButton fab;
-    private TextView favTextView;
     private View rootView;
+    private SwitchCompat switchCompat;
 
     public static DetailFragment newInstance(Context context, Car car) {
 
@@ -102,16 +101,9 @@ public class DetailFragment extends BaseFragment {
         ImageView imageView;
         String price;
 
-        favTextView = rootView.findViewById(R.id.detail_favorite);
-        favBtn = rootView.findViewById(R.id.favbtn);
-        fab = rootView.findViewById(R.id.details_fab);
+        switchCompat = rootView.findViewById(R.id.detail_favorite);
 
         if (car != null) {
-            if (car.getFavorite() == 1) {
-                favBtn.setText("-");
-            } else {
-                favBtn.setText("+");
-            }
 
             textView = rootView.findViewById(R.id.detail_manufacturer);
             textView.setText(databaseHelper.getItemById(
@@ -149,10 +141,10 @@ public class DetailFragment extends BaseFragment {
                     .into(imageView);
             switch (this.car.getFavorite()) {
                 case 0:
-                    favTextView.setText("");
+                    switchCompat.setChecked(false);
                     break;
                 case 1:
-                    favTextView.setText(R.string.lbl_favorite);
+                    switchCompat.setChecked(true);
                     break;
             }
         } else {
@@ -169,9 +161,7 @@ public class DetailFragment extends BaseFragment {
             textView.setVisibility(View.GONE);
             textView = rootView.findViewById(R.id.detail_transmission);
             textView.setVisibility(View.GONE);
-            favTextView.setVisibility(View.GONE);
-            favBtn.setVisibility(View.GONE);
-            fab.setVisibility(View.GONE);
+            switchCompat.setVisibility(View.GONE);
 
             textView = rootView.findViewById(R.id.detail_model);
             textView.setText(this.item.getLabel());
@@ -188,19 +178,16 @@ public class DetailFragment extends BaseFragment {
     private void setListeners() {
 
         if (car != null) {
-            fab.setOnClickListener(new View.OnClickListener() {
+
+            switchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View view) {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (car.getFavorite() == 1) {
                         car.setFavorite(0);
                         updateCar(car);
-                        favTextView.setText("");
-                        favBtn.setText("+");
                     } else {
                         car.setFavorite(1);
                         updateCar(car);
-                        favTextView.setText(R.string.lbl_favorite);
-                        favBtn.setText("-");
                     }
                 }
             });

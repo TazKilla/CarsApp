@@ -91,35 +91,11 @@
                 android:layout_marginTop="@dimen/detail_margin_top"
                 android:contentDescription="@string/description_element_img"/>
 
-            <TextView
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/detail_favorite"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginTop="@dimen/detail_margin_top"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:hint="@string/hint_enter_favorite"
+                style="@style/edit_text_new_car" />
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end">
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/details_fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@android:color/transparent" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/favbtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:elevation="@dimen/floating_button_elevation"
-                    android:textSize="@dimen/dot_text_size"
-                    android:textColor="@android:color/white"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

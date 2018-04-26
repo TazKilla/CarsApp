@@ -69,10 +69,9 @@
         android:inputType="textCapSentences|text"
         style="@style/edit_text_new_car"/>
 
-    <EditText
+    <android.support.v7.widget.SwitchCompat
         android:id="@+id/favorite"
         android:hint="@string/hint_enter_favorite"
-        android:inputType="number"
         style="@style/edit_text_new_car" />
 
 </LinearLayout>
