@@ -8,7 +8,7 @@
     </style>
 
     <style name="AppTheme.Launcher">
-        <item name="android:windowBackground">@drawable/p205_t16_multi</item>
+        <item name="android:windowBackground">@drawable/p205_t16_multi_land</item>
     </style>
 
     <style name="empty_car_view">
