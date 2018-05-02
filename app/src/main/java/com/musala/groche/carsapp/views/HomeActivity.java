@@ -36,6 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import net.hockeyapp.android.UpdateManager;
+import net.hockeyapp.android.CrashManager;
+
 public class HomeActivity extends AppCompatActivity implements RecyclerViewItemClickInterface {
 
     private static final String TAG = "HomeActivity";
@@ -66,6 +69,14 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
         initUI();
         super.onCreate(savedInstanceState);
         setListener();
+        checkForUpdates();
+        checkForCrashes();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterManagers();
     }
 
     @Override
@@ -346,5 +357,17 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewItemC
     private ItemsFragment getItemsFragment(String itemTable) {
         itemsList = databaseHelper.getAllItems(itemTable);
         return ItemsFragment.newInstance(itemsList, itemTable);
+    }
+
+    private void checkForUpdates() {
+        UpdateManager.register(this);
+    }
+
+    private void checkForCrashes() {
+        CrashManager.register(this);
+    }
+
+    private void unregisterManagers() {
+        UpdateManager.unregister();
     }
 }

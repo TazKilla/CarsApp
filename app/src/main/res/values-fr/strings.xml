@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CarsApp</string>
+    <string name="app_name">TestApp</string>
     <string name="title_cars">Voitures</string>
     <string name="title_favorites">Favoris</string>
     <string name="title_items">Elements</string>
